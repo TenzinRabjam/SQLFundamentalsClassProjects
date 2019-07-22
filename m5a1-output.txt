@@ -1,0 +1,1049 @@
+mysql> show databases;
++------------------------+
+| Database               |
++------------------------+
+| information_schema     |
+| alexamara_marina_group |
+| henry_books            |
+| music                  |
+| mysql                  |
+| performance_schema     |
+| premiere               |
+| sys                    |
++------------------------+
+8 rows in set (0.00 sec)
+
+mysql> use premiere;
+Database changed
+mysql> show tables from premiere;
++--------------------+
+| Tables_in_premiere |
++--------------------+
+| customer           |
+| order_line         |
+| orders             |
+| part               |
+| rep                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from orders 
+    -> join order_line on orders.order_num = order_line.order_num;
++-----------+------------+--------------+-----------+----------+-------------+--------------+
+| ORDER_NUM | ORDER_DATE | customer_num | ORDER_NUM | PART_NUM | NUM_ORDERED | QUOTED_PRICE |
++-----------+------------+--------------+-----------+----------+-------------+--------------+
+|     21608 | 10/20/2007 |          148 |     21608 | AT94     |          11 |        21.95 |
+|     21610 | 10/20/2007 |          356 |     21610 | DR93     |           1 |       495.00 |
+|     21610 | 10/20/2007 |          356 |     21610 | DW11     |           1 |       399.99 |
+|     21613 | 10/21/2007 |          408 |     21613 | KL62     |           4 |       329.95 |
+|     21614 | 10/21/2007 |          282 |     21614 | KT03     |           2 |       595.00 |
+|     21617 | 10/23/2007 |          608 |     21617 | BV06     |           2 |       794.95 |
+|     21617 | 10/23/2007 |          608 |     21617 | CD52     |           4 |       150.00 |
+|     21619 | 10/23/2007 |          148 |     21619 | DR93     |           1 |       495.00 |
+|     21623 | 10/23/2007 |          608 |     21623 | KV29     |           2 |      1290.00 |
++-----------+------------+--------------+-----------+----------+-------------+--------------+
+9 rows in set (0.11 sec)
+
+mysql> select concat(rep.first_name," ",last_name) rep_name, customer.customer_name as customer, concat(customer.street, " ", customer.city, " ", customer.state, " ", customer.zip) as address,customer.credit_limit - customer.balance as "Available Credit" from customer join rep on rep.rep_num = customer.rep_num order by customer.credit_limit - customer.balance;
++----------------+----------------------------+-----------------------------------+------------------+
+| rep_name       | customer                   | address                           | Available Credit |
++----------------+----------------------------+-----------------------------------+------------------+
+| Valerie Kaiser | All Season                 | 28 Lakeview Grove FL 33321        |          -721.00 |
+| Richard Hull   | The Everything Shop        | 1828 Raven Crystal FL 33503       |          -285.25 |
+| Valerie Kaiser | Al's Appliance and Sport   | 2837 Greenway Filmore FL 33336    |           950.00 |
+| Juan Perez     | Ferguson's                 | 382 Wildwood Northfield FL 33146  |          1715.00 |
+| Richard Hull   | Lee's Sport and Appliance  | 282 Evergreen Altonville FL 32543 |          2149.00 |
+| Valerie Kaiser | Kilne's                    | 838 Ridgeland Filmore FL 33336    |          2238.00 |
+| Juan Perez     | Bargains Galore            | 3829 Central Grove FL 33321       |          6588.00 |
+| Richard Hull   | Deerfield's Four Seasons   | 282 Columbia Sheldon FL 33553     |          7252.00 |
+| Juan Perez     | Johnson's Department Store | 372 Oxford Sheldon FL 33553       |          7894.00 |
+| Richard Hull   | Brooking Direct            | 3827 Devon Grove FL 33321         |          9568.50 |
++----------------+----------------------------+-----------------------------------+------------------+
+10 rows in set (0.13 sec)
+
+mysql> exit;
+mysql> show databases;
++------------------------+
+| Database               |
++------------------------+
+| information_schema     |
+| alexamara_marina_group |
+| henry_books            |
+| music                  |
+| mysql                  |
+| performance_schema     |
+| premiere               |
+| sys                    |
++------------------------+
+8 rows in set (0.00 sec)
+
+mysql> select customer.customer_name,part.description, order_line.num_orderedfrom customerjoin orders on orders.customer_num = customer.customer_numjoin order_line on order_line.order_num = orders.order_numjoin part on part.part_num = orders.part_numorder by customer_name desc;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'orders on orders.customer_num = customer.customer_numjoin order_line on order_li' at line 1
+mysql> use premiere;
+Database changed
+mysql> select customer.customer_name,part.description, order_line.num_orderedfrom customerjoin orders on orders.customer_num = customer.customer_numjoin order_line on order_line.order_num = orders.order_numjoin part on part.part_num = orders.part_numorder by customer_name desc;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'orders on orders.customer_num = customer.customer_numjoin order_line on order_li' at line 1
+mysql> select customer.customer_name,part.description, order_line.num_orderedfrom customer join orders on orders.customer_num = customer.customer_num join order_line on order_line.order_num = orders.order_num join part on part.part_num = orders.part_numorder by customer_name desc;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'join orders on orders.customer_num = customer.customer_num join order_line on or' at line 1
+mysql> select customer.customer_name,part.description, order_line.num_ordered from customer join orders on orders.customer_num = customer.customer_num join order_line on order_line.order_num = orders.order_num join part on part.part_num = orders.part_numorder by customer_name desc;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'by customer_name desc' at line 1
+mysql> select customer.customer_name,part.description, order_line.num_ordered from customer join orders on orders.customer_num = customer.customer_num join order_line on order_line.order_num = orders.order_num join part on part.part_num = orders.part_num order by customer_name desc;
+ERROR 1054 (42S22): Unknown column 'orders.part_num' in 'on clause'
+mysql> select customer.customer_name,part.description, order_line.num_ordered from customer join orders on orders.customer_num = customer.customer_num join order_line on order_line.order_num = orders.order_num join part on part.part_num = order_line.part_num order by customer_name desc;
++----------------------------+----------------+-------------+
+| customer_name              | description    | num_ordered |
++----------------------------+----------------+-------------+
+| The Everything Shop        | Dryer          |           4 |
+| Johnson's Department Store | Microwave Oven |           4 |
+| Johnson's Department Store | Home Gym       |           2 |
+| Johnson's Department Store | Treadmill      |           2 |
+| Ferguson's                 | Washer         |           1 |
+| Ferguson's                 | Gas Range      |           1 |
+| Brooking Direct            | Dishwasher     |           2 |
+| Al's Appliance and Sport   | Iron           |          11 |
+| Al's Appliance and Sport   | Gas Range      |           1 |
++----------------------------+----------------+-------------+
+9 rows in set (0.11 sec)
+
+mysql> select customer.customer_name,part.part_num, part.description, order_line.num_ordered from customer join orders on orders.customer_num = customer.customer_num join order_line on order_line.order_num = orders.order_num join part on part.part_num = order_line.part_num order by customer_name desc;
++----------------------------+----------+----------------+-------------+
+| customer_name              | part_num | description    | num_ordered |
++----------------------------+----------+----------------+-------------+
+| The Everything Shop        | KL62     | Dryer          |           4 |
+| Johnson's Department Store | KV29     | Treadmill      |           2 |
+| Johnson's Department Store | CD52     | Microwave Oven |           4 |
+| Johnson's Department Store | BV06     | Home Gym       |           2 |
+| Ferguson's                 | DW11     | Washer         |           1 |
+| Ferguson's                 | DR93     | Gas Range      |           1 |
+| Brooking Direct            | KT03     | Dishwasher     |           2 |
+| Al's Appliance and Sport   | DR93     | Gas Range      |           1 |
+| Al's Appliance and Sport   | AT94     | Iron           |          11 |
++----------------------------+----------+----------------+-------------+
+9 rows in set (0.00 sec)
+
+mysql> use alexamara_marina_group; select marina.name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join owner on owner.owner_num = marina_slip.owner_num  join marina on marina.marina_num = marina_slip.marina_num;
+Database changed
++-------------------+----------------------+-----------+------------+
+| name              | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.02 sec)
+
+mysql> use alexamara_marina_group; select marina.name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num; join owner on owner.owner_num = marina_slip.owner_num 
+Database changed
+ERROR 1054 (42S22): Unknown column 'owner.first_name' in 'field list'
+    -> use alexamara_marina_group; select marina.name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num; join owner on owner.owner_num = marina_slip.owner_num ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'join owner on owner.owner_num = marina_slip.owner_num 
+use alexamara_marina_grou' at line 1
+ERROR 1054 (42S22): Unknown column 'owner.first_name' in 'field list'
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'join owner on owner.owner_num = marina_slip.owner_num' at line 1
+mysql> select marina.name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num; 
++-------------------+----------------------+-----------+------------+
+| name              | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> use alexamara_marina_group; select marina.name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip;
+Database changed
+ERROR 1054 (42S22): Unknown column 'marina.name' in 'field list'
+mysql> select marina.name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip;
+ERROR 1054 (42S22): Unknown column 'marina.name' in 'field list'
+mysql> select marina.name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num order by marina_slip.slip_id;
++-------------------+----------------------+-----------+------------+
+| name              | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select marina.name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip; 
+ERROR 1054 (42S22): Unknown column 'marina.name' in 'field list'
+mysql> select marina.name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num; 
++-------------------+----------------------+-----------+------------+
+| name              | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select concat(owner.first_name, " ", owner.last_name) as owner_name, marina.name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num;
++----------------------+-------------------+-----------+------------+
+| owner_name           | name              | boat_name | rental_fee |
++----------------------+-------------------+-----------+------------+
+| Bruce and Jean Adney | Alexamara Central | Bravo     |    1800.00 |
+| Daniel Feenstra      | Alexamara Central | Chinook   |    1800.00 |
++----------------------+-------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select marina.name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num;
++-------------------+----------------------+-----------+------------+
+| name              | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql>  select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num;
++-------------------+----------------------+-----------+------------+
+| marina_name       | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num;
++---------+------------+----------+--------+------------+-----------+-------------+-----------+------------+-------------------+--------------+------------+-------+-------+-----------+-----------+----------------+---------------+--------+-------+-------+
+| slip_id | marina_num | slip_num | length | rental_fee | boat_name | boat_type   | owner_num | marina_num | name              | address      | city       | state | zip   | owner_num | last_name | first_name     | address       | city   | state | zip   |
++---------+------------+----------+--------+------------+-----------+-------------+-----------+------------+-------------------+--------------+------------+-------+-------+-----------+-----------+----------------+---------------+--------+-------+-------+
+|       6 |          2 | 1        |     25 |    1800.00 | Bravo     | Dolphin 25  | AD57      |          2 | Alexamara Central | 283 Branston | W. Brinman | FL    | 32274 | AD57      | Adney     | Bruce and Jean | 208 Citrus    | Bowton | FL    | 31313 |
+|       7 |          2 | 2        |     25 |    1800.00 | Chinook   | Dolphin 22  | FE82      |          2 | Alexamara Central | 283 Branston | W. Brinman | FL    | 32274 | FE82      | Feenstra  | Daniel         | 7822 Coventry | Kaleva | FL    | 32521 |
++---------+------------+----------+--------+------------+-----------+-------------+-----------+------------+-------------------+--------------+------------+-------+-------+-----------+-----------+----------------+---------------+--------+-------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina_slip.marina_num = marina.marina_num join owner on owner.owner_num = marina_slip.owner_num;
++-------------------+----------------------+-----------+------------+
+| marina_name       | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from marina_slip;
++---------+------------+----------+--------+------------+--------------+-------------+-----------+
+| slip_id | marina_num | slip_num | length | rental_fee | boat_name    | boat_type   | owner_num |
++---------+------------+----------+--------+------------+--------------+-------------+-----------+
+|       1 |          1 | A1       |     40 |    3800.00 | Anders II    | Sprite 4000 |  AN75     |
+|       2 |          1 | A2       |     40 |    3800.00 | Our Toy      | Ray 4025    |  EL25     |
+|       3 |          1 | A3       |     40 |    3600.00 | Escape       | Sprite 4000 |  KE22     |
+|       4 |          1 | B1       |     30 |    2400.00 | Gypsy        | Dolphin 28  |  JU92     |
+|       5 |          1 | B2       |     30 |    2600.00 | Anderson III | Sprite 3000 |  AN75     |
+|       6 |          2 | 1        |     25 |    1800.00 | Bravo        | Dolphin 25  | AD57      |
+|       7 |          2 | 2        |     25 |    1800.00 | Chinook      | Dolphin 22  | FE82      |
+|       8 |          2 | 3        |     25 |    2000.00 | Listy        | Dolphin 25  |  SM72     |
+|       9 |          2 | 4        |     30 |    2500.00 | Mermaid      | Dolphin 28  |  BL72     |
+|      10 |          2 | 5        |     40 |    4200.00 | Axxon II     | Dolphin 40  |  NO27     |
+|      11 |          2 | 6        |     40 |    4200.00 | Karvel       | Ray 4025    |  TR72     |
++---------+------------+----------+--------+------------+--------------+-------------+-----------+
+11 rows in set (0.00 sec)
+
+mysql> select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina  join owner on owner.owner_num = marina_slip.owner_num;
++-------------------+----------------------+-----------+------------+
+| marina_name       | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara East    | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara East    | Daniel Feenstra      | Chinook   |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+4 rows in set (0.00 sec)
+
+mysql> select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina  join owner; 
++-------------------+-----------------------+--------------+------------+
+| marina_name       | owner_name            | boat_name    | rental_fee |
++-------------------+-----------------------+--------------+------------+
+| Alexamara East    | Bruce and Jean Adney  | Anders II    |    3800.00 |
+| Alexamara Central | Bruce and Jean Adney  | Anders II    |    3800.00 |
+| Alexamara East    | Bill Anderson         | Anders II    |    3800.00 |
+| Alexamara Central | Bill Anderson         | Anders II    |    3800.00 |
+| Alexamara East    | Mary Blake            | Anders II    |    3800.00 |
+| Alexamara Central | Mary Blake            | Anders II    |    3800.00 |
+| Alexamara East    | Sandy and Bill Elend  | Anders II    |    3800.00 |
+| Alexamara Central | Sandy and Bill Elend  | Anders II    |    3800.00 |
+| Alexamara East    | Daniel Feenstra       | Anders II    |    3800.00 |
+| Alexamara Central | Daniel Feenstra       | Anders II    |    3800.00 |
+| Alexamara East    | Maria Juarez          | Anders II    |    3800.00 |
+| Alexamara Central | Maria Juarez          | Anders II    |    3800.00 |
+| Alexamara East    | Alyssa Kelly          | Anders II    |    3800.00 |
+| Alexamara Central | Alyssa Kelly          | Anders II    |    3800.00 |
+| Alexamara East    | Peter Norton          | Anders II    |    3800.00 |
+| Alexamara Central | Peter Norton          | Anders II    |    3800.00 |
+| Alexamara East    | Becky and Dave Smeltz | Anders II    |    3800.00 |
+| Alexamara Central | Becky and Dave Smeltz | Anders II    |    3800.00 |
+| Alexamara East    | Ashton Trent          | Anders II    |    3800.00 |
+| Alexamara Central | Ashton Trent          | Anders II    |    3800.00 |
+| Alexamara East    | Bruce and Jean Adney  | Our Toy      |    3800.00 |
+| Alexamara Central | Bruce and Jean Adney  | Our Toy      |    3800.00 |
+| Alexamara East    | Bill Anderson         | Our Toy      |    3800.00 |
+| Alexamara Central | Bill Anderson         | Our Toy      |    3800.00 |
+| Alexamara East    | Mary Blake            | Our Toy      |    3800.00 |
+| Alexamara Central | Mary Blake            | Our Toy      |    3800.00 |
+| Alexamara East    | Sandy and Bill Elend  | Our Toy      |    3800.00 |
+| Alexamara Central | Sandy and Bill Elend  | Our Toy      |    3800.00 |
+| Alexamara East    | Daniel Feenstra       | Our Toy      |    3800.00 |
+| Alexamara Central | Daniel Feenstra       | Our Toy      |    3800.00 |
+| Alexamara East    | Maria Juarez          | Our Toy      |    3800.00 |
+| Alexamara Central | Maria Juarez          | Our Toy      |    3800.00 |
+| Alexamara East    | Alyssa Kelly          | Our Toy      |    3800.00 |
+| Alexamara Central | Alyssa Kelly          | Our Toy      |    3800.00 |
+| Alexamara East    | Peter Norton          | Our Toy      |    3800.00 |
+| Alexamara Central | Peter Norton          | Our Toy      |    3800.00 |
+| Alexamara East    | Becky and Dave Smeltz | Our Toy      |    3800.00 |
+| Alexamara Central | Becky and Dave Smeltz | Our Toy      |    3800.00 |
+| Alexamara East    | Ashton Trent          | Our Toy      |    3800.00 |
+| Alexamara Central | Ashton Trent          | Our Toy      |    3800.00 |
+| Alexamara East    | Bruce and Jean Adney  | Escape       |    3600.00 |
+| Alexamara Central | Bruce and Jean Adney  | Escape       |    3600.00 |
+| Alexamara East    | Bill Anderson         | Escape       |    3600.00 |
+| Alexamara Central | Bill Anderson         | Escape       |    3600.00 |
+| Alexamara East    | Mary Blake            | Escape       |    3600.00 |
+| Alexamara Central | Mary Blake            | Escape       |    3600.00 |
+| Alexamara East    | Sandy and Bill Elend  | Escape       |    3600.00 |
+| Alexamara Central | Sandy and Bill Elend  | Escape       |    3600.00 |
+| Alexamara East    | Daniel Feenstra       | Escape       |    3600.00 |
+| Alexamara Central | Daniel Feenstra       | Escape       |    3600.00 |
+| Alexamara East    | Maria Juarez          | Escape       |    3600.00 |
+| Alexamara Central | Maria Juarez          | Escape       |    3600.00 |
+| Alexamara East    | Alyssa Kelly          | Escape       |    3600.00 |
+| Alexamara Central | Alyssa Kelly          | Escape       |    3600.00 |
+| Alexamara East    | Peter Norton          | Escape       |    3600.00 |
+| Alexamara Central | Peter Norton          | Escape       |    3600.00 |
+| Alexamara East    | Becky and Dave Smeltz | Escape       |    3600.00 |
+| Alexamara Central | Becky and Dave Smeltz | Escape       |    3600.00 |
+| Alexamara East    | Ashton Trent          | Escape       |    3600.00 |
+| Alexamara Central | Ashton Trent          | Escape       |    3600.00 |
+| Alexamara East    | Bruce and Jean Adney  | Gypsy        |    2400.00 |
+| Alexamara Central | Bruce and Jean Adney  | Gypsy        |    2400.00 |
+| Alexamara East    | Bill Anderson         | Gypsy        |    2400.00 |
+| Alexamara Central | Bill Anderson         | Gypsy        |    2400.00 |
+| Alexamara East    | Mary Blake            | Gypsy        |    2400.00 |
+| Alexamara Central | Mary Blake            | Gypsy        |    2400.00 |
+| Alexamara East    | Sandy and Bill Elend  | Gypsy        |    2400.00 |
+| Alexamara Central | Sandy and Bill Elend  | Gypsy        |    2400.00 |
+| Alexamara East    | Daniel Feenstra       | Gypsy        |    2400.00 |
+| Alexamara Central | Daniel Feenstra       | Gypsy        |    2400.00 |
+| Alexamara East    | Maria Juarez          | Gypsy        |    2400.00 |
+| Alexamara Central | Maria Juarez          | Gypsy        |    2400.00 |
+| Alexamara East    | Alyssa Kelly          | Gypsy        |    2400.00 |
+| Alexamara Central | Alyssa Kelly          | Gypsy        |    2400.00 |
+| Alexamara East    | Peter Norton          | Gypsy        |    2400.00 |
+| Alexamara Central | Peter Norton          | Gypsy        |    2400.00 |
+| Alexamara East    | Becky and Dave Smeltz | Gypsy        |    2400.00 |
+| Alexamara Central | Becky and Dave Smeltz | Gypsy        |    2400.00 |
+| Alexamara East    | Ashton Trent          | Gypsy        |    2400.00 |
+| Alexamara Central | Ashton Trent          | Gypsy        |    2400.00 |
+| Alexamara East    | Bruce and Jean Adney  | Anderson III |    2600.00 |
+| Alexamara Central | Bruce and Jean Adney  | Anderson III |    2600.00 |
+| Alexamara East    | Bill Anderson         | Anderson III |    2600.00 |
+| Alexamara Central | Bill Anderson         | Anderson III |    2600.00 |
+| Alexamara East    | Mary Blake            | Anderson III |    2600.00 |
+| Alexamara Central | Mary Blake            | Anderson III |    2600.00 |
+| Alexamara East    | Sandy and Bill Elend  | Anderson III |    2600.00 |
+| Alexamara Central | Sandy and Bill Elend  | Anderson III |    2600.00 |
+| Alexamara East    | Daniel Feenstra       | Anderson III |    2600.00 |
+| Alexamara Central | Daniel Feenstra       | Anderson III |    2600.00 |
+| Alexamara East    | Maria Juarez          | Anderson III |    2600.00 |
+| Alexamara Central | Maria Juarez          | Anderson III |    2600.00 |
+| Alexamara East    | Alyssa Kelly          | Anderson III |    2600.00 |
+| Alexamara Central | Alyssa Kelly          | Anderson III |    2600.00 |
+| Alexamara East    | Peter Norton          | Anderson III |    2600.00 |
+| Alexamara Central | Peter Norton          | Anderson III |    2600.00 |
+| Alexamara East    | Becky and Dave Smeltz | Anderson III |    2600.00 |
+| Alexamara Central | Becky and Dave Smeltz | Anderson III |    2600.00 |
+| Alexamara East    | Ashton Trent          | Anderson III |    2600.00 |
+| Alexamara Central | Ashton Trent          | Anderson III |    2600.00 |
+| Alexamara East    | Bruce and Jean Adney  | Bravo        |    1800.00 |
+| Alexamara Central | Bruce and Jean Adney  | Bravo        |    1800.00 |
+| Alexamara East    | Bill Anderson         | Bravo        |    1800.00 |
+| Alexamara Central | Bill Anderson         | Bravo        |    1800.00 |
+| Alexamara East    | Mary Blake            | Bravo        |    1800.00 |
+| Alexamara Central | Mary Blake            | Bravo        |    1800.00 |
+| Alexamara East    | Sandy and Bill Elend  | Bravo        |    1800.00 |
+| Alexamara Central | Sandy and Bill Elend  | Bravo        |    1800.00 |
+| Alexamara East    | Daniel Feenstra       | Bravo        |    1800.00 |
+| Alexamara Central | Daniel Feenstra       | Bravo        |    1800.00 |
+| Alexamara East    | Maria Juarez          | Bravo        |    1800.00 |
+| Alexamara Central | Maria Juarez          | Bravo        |    1800.00 |
+| Alexamara East    | Alyssa Kelly          | Bravo        |    1800.00 |
+| Alexamara Central | Alyssa Kelly          | Bravo        |    1800.00 |
+| Alexamara East    | Peter Norton          | Bravo        |    1800.00 |
+| Alexamara Central | Peter Norton          | Bravo        |    1800.00 |
+| Alexamara East    | Becky and Dave Smeltz | Bravo        |    1800.00 |
+| Alexamara Central | Becky and Dave Smeltz | Bravo        |    1800.00 |
+| Alexamara East    | Ashton Trent          | Bravo        |    1800.00 |
+| Alexamara Central | Ashton Trent          | Bravo        |    1800.00 |
+| Alexamara East    | Bruce and Jean Adney  | Chinook      |    1800.00 |
+| Alexamara Central | Bruce and Jean Adney  | Chinook      |    1800.00 |
+| Alexamara East    | Bill Anderson         | Chinook      |    1800.00 |
+| Alexamara Central | Bill Anderson         | Chinook      |    1800.00 |
+| Alexamara East    | Mary Blake            | Chinook      |    1800.00 |
+| Alexamara Central | Mary Blake            | Chinook      |    1800.00 |
+| Alexamara East    | Sandy and Bill Elend  | Chinook      |    1800.00 |
+| Alexamara Central | Sandy and Bill Elend  | Chinook      |    1800.00 |
+| Alexamara East    | Daniel Feenstra       | Chinook      |    1800.00 |
+| Alexamara Central | Daniel Feenstra       | Chinook      |    1800.00 |
+| Alexamara East    | Maria Juarez          | Chinook      |    1800.00 |
+| Alexamara Central | Maria Juarez          | Chinook      |    1800.00 |
+| Alexamara East    | Alyssa Kelly          | Chinook      |    1800.00 |
+| Alexamara Central | Alyssa Kelly          | Chinook      |    1800.00 |
+| Alexamara East    | Peter Norton          | Chinook      |    1800.00 |
+| Alexamara Central | Peter Norton          | Chinook      |    1800.00 |
+| Alexamara East    | Becky and Dave Smeltz | Chinook      |    1800.00 |
+| Alexamara Central | Becky and Dave Smeltz | Chinook      |    1800.00 |
+| Alexamara East    | Ashton Trent          | Chinook      |    1800.00 |
+| Alexamara Central | Ashton Trent          | Chinook      |    1800.00 |
+| Alexamara East    | Bruce and Jean Adney  | Listy        |    2000.00 |
+| Alexamara Central | Bruce and Jean Adney  | Listy        |    2000.00 |
+| Alexamara East    | Bill Anderson         | Listy        |    2000.00 |
+| Alexamara Central | Bill Anderson         | Listy        |    2000.00 |
+| Alexamara East    | Mary Blake            | Listy        |    2000.00 |
+| Alexamara Central | Mary Blake            | Listy        |    2000.00 |
+| Alexamara East    | Sandy and Bill Elend  | Listy        |    2000.00 |
+| Alexamara Central | Sandy and Bill Elend  | Listy        |    2000.00 |
+| Alexamara East    | Daniel Feenstra       | Listy        |    2000.00 |
+| Alexamara Central | Daniel Feenstra       | Listy        |    2000.00 |
+| Alexamara East    | Maria Juarez          | Listy        |    2000.00 |
+| Alexamara Central | Maria Juarez          | Listy        |    2000.00 |
+| Alexamara East    | Alyssa Kelly          | Listy        |    2000.00 |
+| Alexamara Central | Alyssa Kelly          | Listy        |    2000.00 |
+| Alexamara East    | Peter Norton          | Listy        |    2000.00 |
+| Alexamara Central | Peter Norton          | Listy        |    2000.00 |
+| Alexamara East    | Becky and Dave Smeltz | Listy        |    2000.00 |
+| Alexamara Central | Becky and Dave Smeltz | Listy        |    2000.00 |
+| Alexamara East    | Ashton Trent          | Listy        |    2000.00 |
+| Alexamara Central | Ashton Trent          | Listy        |    2000.00 |
+| Alexamara East    | Bruce and Jean Adney  | Mermaid      |    2500.00 |
+| Alexamara Central | Bruce and Jean Adney  | Mermaid      |    2500.00 |
+| Alexamara East    | Bill Anderson         | Mermaid      |    2500.00 |
+| Alexamara Central | Bill Anderson         | Mermaid      |    2500.00 |
+| Alexamara East    | Mary Blake            | Mermaid      |    2500.00 |
+| Alexamara Central | Mary Blake            | Mermaid      |    2500.00 |
+| Alexamara East    | Sandy and Bill Elend  | Mermaid      |    2500.00 |
+| Alexamara Central | Sandy and Bill Elend  | Mermaid      |    2500.00 |
+| Alexamara East    | Daniel Feenstra       | Mermaid      |    2500.00 |
+| Alexamara Central | Daniel Feenstra       | Mermaid      |    2500.00 |
+| Alexamara East    | Maria Juarez          | Mermaid      |    2500.00 |
+| Alexamara Central | Maria Juarez          | Mermaid      |    2500.00 |
+| Alexamara East    | Alyssa Kelly          | Mermaid      |    2500.00 |
+| Alexamara Central | Alyssa Kelly          | Mermaid      |    2500.00 |
+| Alexamara East    | Peter Norton          | Mermaid      |    2500.00 |
+| Alexamara Central | Peter Norton          | Mermaid      |    2500.00 |
+| Alexamara East    | Becky and Dave Smeltz | Mermaid      |    2500.00 |
+| Alexamara Central | Becky and Dave Smeltz | Mermaid      |    2500.00 |
+| Alexamara East    | Ashton Trent          | Mermaid      |    2500.00 |
+| Alexamara Central | Ashton Trent          | Mermaid      |    2500.00 |
+| Alexamara East    | Bruce and Jean Adney  | Axxon II     |    4200.00 |
+| Alexamara Central | Bruce and Jean Adney  | Axxon II     |    4200.00 |
+| Alexamara East    | Bill Anderson         | Axxon II     |    4200.00 |
+| Alexamara Central | Bill Anderson         | Axxon II     |    4200.00 |
+| Alexamara East    | Mary Blake            | Axxon II     |    4200.00 |
+| Alexamara Central | Mary Blake            | Axxon II     |    4200.00 |
+| Alexamara East    | Sandy and Bill Elend  | Axxon II     |    4200.00 |
+| Alexamara Central | Sandy and Bill Elend  | Axxon II     |    4200.00 |
+| Alexamara East    | Daniel Feenstra       | Axxon II     |    4200.00 |
+| Alexamara Central | Daniel Feenstra       | Axxon II     |    4200.00 |
+| Alexamara East    | Maria Juarez          | Axxon II     |    4200.00 |
+| Alexamara Central | Maria Juarez          | Axxon II     |    4200.00 |
+| Alexamara East    | Alyssa Kelly          | Axxon II     |    4200.00 |
+| Alexamara Central | Alyssa Kelly          | Axxon II     |    4200.00 |
+| Alexamara East    | Peter Norton          | Axxon II     |    4200.00 |
+| Alexamara Central | Peter Norton          | Axxon II     |    4200.00 |
+| Alexamara East    | Becky and Dave Smeltz | Axxon II     |    4200.00 |
+| Alexamara Central | Becky and Dave Smeltz | Axxon II     |    4200.00 |
+| Alexamara East    | Ashton Trent          | Axxon II     |    4200.00 |
+| Alexamara Central | Ashton Trent          | Axxon II     |    4200.00 |
+| Alexamara East    | Bruce and Jean Adney  | Karvel       |    4200.00 |
+| Alexamara Central | Bruce and Jean Adney  | Karvel       |    4200.00 |
+| Alexamara East    | Bill Anderson         | Karvel       |    4200.00 |
+| Alexamara Central | Bill Anderson         | Karvel       |    4200.00 |
+| Alexamara East    | Mary Blake            | Karvel       |    4200.00 |
+| Alexamara Central | Mary Blake            | Karvel       |    4200.00 |
+| Alexamara East    | Sandy and Bill Elend  | Karvel       |    4200.00 |
+| Alexamara Central | Sandy and Bill Elend  | Karvel       |    4200.00 |
+| Alexamara East    | Daniel Feenstra       | Karvel       |    4200.00 |
+| Alexamara Central | Daniel Feenstra       | Karvel       |    4200.00 |
+| Alexamara East    | Maria Juarez          | Karvel       |    4200.00 |
+| Alexamara Central | Maria Juarez          | Karvel       |    4200.00 |
+| Alexamara East    | Alyssa Kelly          | Karvel       |    4200.00 |
+| Alexamara Central | Alyssa Kelly          | Karvel       |    4200.00 |
+| Alexamara East    | Peter Norton          | Karvel       |    4200.00 |
+| Alexamara Central | Peter Norton          | Karvel       |    4200.00 |
+| Alexamara East    | Becky and Dave Smeltz | Karvel       |    4200.00 |
+| Alexamara Central | Becky and Dave Smeltz | Karvel       |    4200.00 |
+| Alexamara East    | Ashton Trent          | Karvel       |    4200.00 |
+| Alexamara Central | Ashton Trent          | Karvel       |    4200.00 |
++-------------------+-----------------------+--------------+------------+
+220 rows in set (0.00 sec)
+
+mysql> select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina_slip.marina_num = marina.marina_num join owner on marina_slip.owner_num = owner.owner_num;
++-------------------+----------------------+-----------+------------+
+| marina_name       | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina  join owner on owner.owner_num = marina_slip.owner_num;
++-------------------+----------------------+-----------+------------+
+| marina_name       | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara East    | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara East    | Daniel Feenstra      | Chinook   |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+4 rows in set (0.00 sec)
+
+mysql> select * from owner;
++-----------+-----------+----------------+----------------+-------------+-------+-------+
+| owner_num | last_name | first_name     | address        | city        | state | zip   |
++-----------+-----------+----------------+----------------+-------------+-------+-------+
+| AD57      | Adney     | Bruce and Jean | 208 Citrus     | Bowton      | FL    | 31313 |
+| AN75      | Anderson  | Bill           | 18 Wilcox      | Glander Bay | FL    | 31044 |
+| BL72      | Blake     | Mary           | 2672 Commodore | Bowton      | FL    | 31313 |
+| EL25      | Elend     | Sandy and Bill | 462 Riverside  | Rivard      | FL    | 31062 |
+| FE82      | Feenstra  | Daniel         | 7822 Coventry  | Kaleva      | FL    | 32521 |
+| JU92      | Juarez    | Maria          | 8922 Oak       | Rivard      | FL    | 31062 |
+| KE22      | Kelly     | Alyssa         | 5271 Waters    | Bowton      | FL    | 31313 |
+| NO27      | Norton    | Peter          | 2811 Lakewood  | Lewiston    | FL    | 32765 |
+| SM72      | Smeltz    | Becky and Dave | 922 Garland    | Glander Bay | FL    | 31044 |
+| TR72      | Trent     | Ashton         | 922 Crest      | Bay Shores  | FL    | 30992 |
++-----------+-----------+----------------+----------------+-------------+-------+-------+
+10 rows in set (0.00 sec)
+
+mysql> select * from marina;
++------------+-------------------+--------------+------------+-------+-------+
+| marina_num | name              | address      | city       | state | zip   |
++------------+-------------------+--------------+------------+-------+-------+
+|          1 | Alexamara East    | 108 2nd Ave. | Brinman    | FL    | 32273 |
+|          2 | Alexamara Central | 283 Branston | W. Brinman | FL    | 32274 |
++------------+-------------------+--------------+------------+-------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select * from marina_slip;
++---------+------------+----------+--------+------------+--------------+-------------+-----------+
+| slip_id | marina_num | slip_num | length | rental_fee | boat_name    | boat_type   | owner_num |
++---------+------------+----------+--------+------------+--------------+-------------+-----------+
+|       1 |          1 | A1       |     40 |    3800.00 | Anders II    | Sprite 4000 |  AN75     |
+|       2 |          1 | A2       |     40 |    3800.00 | Our Toy      | Ray 4025    |  EL25     |
+|       3 |          1 | A3       |     40 |    3600.00 | Escape       | Sprite 4000 |  KE22     |
+|       4 |          1 | B1       |     30 |    2400.00 | Gypsy        | Dolphin 28  |  JU92     |
+|       5 |          1 | B2       |     30 |    2600.00 | Anderson III | Sprite 3000 |  AN75     |
+|       6 |          2 | 1        |     25 |    1800.00 | Bravo        | Dolphin 25  | AD57      |
+|       7 |          2 | 2        |     25 |    1800.00 | Chinook      | Dolphin 22  | FE82      |
+|       8 |          2 | 3        |     25 |    2000.00 | Listy        | Dolphin 25  |  SM72     |
+|       9 |          2 | 4        |     30 |    2500.00 | Mermaid      | Dolphin 28  |  BL72     |
+|      10 |          2 | 5        |     40 |    4200.00 | Axxon II     | Dolphin 40  |  NO27     |
+|      11 |          2 | 6        |     40 |    4200.00 | Karvel       | Ray 4025    |  TR72     |
++---------+------------+----------+--------+------------+--------------+-------------+-----------+
+11 rows in set (0.00 sec)
+
+mysql> select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina  join owner on owner.owner_num = marina_slip.owner_num;
++-------------------+----------------------+-----------+------------+
+| marina_name       | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara East    | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara East    | Daniel Feenstra      | Chinook   |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+4 rows in set (0.00 sec)
+
+mysql> select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num;
++-------------------+----------------------+-----------+------------+
+| marina_name       | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> use alexamara_marina_group; select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num;
+Database changed
++-------------------+----------------------+-----------+------------+
+| marina_name       | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> ^C
+mysql>  select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num;
++-------------------+----------------------+-----------+------------+
+| marina_name       | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> show columns from owner;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| owner_num  | varchar(5)  | NO   | PRI | NULL    |       |
+| last_name  | varchar(50) | YES  |     | NULL    |       |
+| first_name | varchar(50) | YES  |     | NULL    |       |
+| address    | varchar(80) | YES  |     | NULL    |       |
+| city       | varchar(40) | YES  |     | NULL    |       |
+| state      | char(2)     | YES  |     | NULL    |       |
+| zip        | varchar(10) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+
+mysql> show columns from marina
+    -> ;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| marina_num | int(4)      | NO   | PRI | NULL    |       |
+| name       | varchar(50) | YES  |     | NULL    |       |
+| address    | varchar(80) | YES  |     | NULL    |       |
+| city       | varchar(40) | YES  |     | NULL    |       |
+| state      | char(2)     | YES  |     | NULL    |       |
+| zip        | varchar(10) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> show columns from marina_slip
+    -> ;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| slip_id    | int(4)       | NO   | PRI | NULL    |       |
+| marina_num | int(3)       | YES  |     | NULL    |       |
+| slip_num   | varchar(3)   | YES  |     | NULL    |       |
+| length     | int(4)       | YES  |     | NULL    |       |
+| rental_fee | decimal(8,2) | YES  |     | NULL    |       |
+| boat_name  | varchar(80)  | YES  |     | NULL    |       |
+| boat_type  | varchar(30)  | YES  |     | NULL    |       |
+| owner_num  | varchar(6)   | YES  |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> alter table marina_slip modify column owner_num varchar(5); 
+Query OK, 11 rows affected (1.31 sec)
+Records: 11  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> alter table marina_slip modify column marina_num int(4); 
+Query OK, 0 rows affected (0.13 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql>  select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num;
++-------------------+----------------------+-----------+------------+
+| marina_name       | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql>  select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num;
++-------------------+----------------------+-----------+------------+
+| marina_name       | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> show columns from marina
+    -> ;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| marina_num | int(4)      | NO   | PRI | NULL    |       |
+| name       | varchar(50) | YES  |     | NULL    |       |
+| address    | varchar(80) | YES  |     | NULL    |       |
+| city       | varchar(40) | YES  |     | NULL    |       |
+| state      | char(2)     | YES  |     | NULL    |       |
+| zip        | varchar(10) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> show columns from marina_slip;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| slip_id    | int(4)       | NO   | PRI | NULL    |       |
+| marina_num | int(4)       | YES  |     | NULL    |       |
+| slip_num   | varchar(3)   | YES  |     | NULL    |       |
+| length     | int(4)       | YES  |     | NULL    |       |
+| rental_fee | decimal(8,2) | YES  |     | NULL    |       |
+| boat_name  | varchar(80)  | YES  |     | NULL    |       |
+| boat_type  | varchar(30)  | YES  |     | NULL    |       |
+| owner_num  | varchar(5)   | YES  |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num;
++-------------------+----------------------+-----------+------------+
+| marina_name       | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select marina.name as marina_name, concat(owner.first_name, " ", owner.last_name) as owner_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num;
++-------------------+----------------------+-----------+------------+
+| marina_name       | owner_name           | boat_name | rental_fee |
++-------------------+----------------------+-----------+------------+
+| Alexamara Central | Bruce and Jean Adney | Bravo     |    1800.00 |
+| Alexamara Central | Daniel Feenstra      | Chinook   |    1800.00 |
++-------------------+----------------------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select marina.name as marina_name, owner.first_name, owner.last_name, marina_slip.boat_name, marina_slip.rental_fee  from marina_slip join marina on marina.marina_num = marina_slip.marina_num join owner on owner.owner_num = marina_slip.owner_num;
++-------------------+----------------+-----------+-----------+------------+
+| marina_name       | first_name     | last_name | boat_name | rental_fee |
++-------------------+----------------+-----------+-----------+------------+
+| Alexamara Central | Bruce and Jean | Adney     | Bravo     |    1800.00 |
+| Alexamara Central | Daniel         | Feenstra  | Chinook   |    1800.00 |
++-------------------+----------------+-----------+-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select marina.name as marina_name, owner.first_name, owner.last_name  from owner join marina_slip on marina.owner_num = marina_slip.owner_num join marina on  marina_slip.marina_num = marina.marina_num;
+ERROR 1054 (42S22): Unknown column 'marina.owner_num' in 'on clause'
+mysql> select marina.name as marina_name, owner.first_name, owner.last_name  from owner join marina_slip on owner.owner_num = marina_slip.owner_num join marina on  marina_slip.marina_num = marina.marina_num;
++-------------------+----------------+-----------+
+| marina_name       | first_name     | last_name |
++-------------------+----------------+-----------+
+| Alexamara Central | Bruce and Jean | Adney     |
+| Alexamara Central | Daniel         | Feenstra  |
++-------------------+----------------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> exit;
+mysql> select concat(owner.first_name, " ",owner.last_name) as customer, service_category.category_description as description,  service_request.est_hours as E_Hours, service_request.spent_hours as S_Hours from service_request join service_category on service_category.category_num = service_request.category_num join marina_slip on  marina_slip.slip_id = service_request.slip_id join owner on owner.owner_num = marina_slip.owner_num group by description;
+ERROR 1146 (42S02): Table 'henry_books.service_request' doesn't exist
+mysql> use henry_books;
+Database changed
+mysql> select concat(owner.first_name, " ",owner.last_name) as customer, service_category.category_description as description,  service_request.est_hours as E_Hours, service_request.spent_hours as S_Hours from service_request join service_category on service_category.category_num = service_request.category_num join marina_slip on  marina_slip.slip_id = service_request.slip_id join owner on owner.owner_num = marina_slip.owner_num group by description;
+ERROR 1146 (42S02): Table 'henry_books.service_request' doesn't exist
+mysql> show databases;
++------------------------+
+| Database               |
++------------------------+
+| information_schema     |
+| alexamara_marina_group |
+| henry_books            |
+| music                  |
+| mysql                  |
+| performance_schema     |
+| premiere               |
+| sys                    |
++------------------------+
+8 rows in set (0.00 sec)
+
+mysql> use alexamara_marina_group;
+Database changed
+mysql> select concat(owner.first_name, " ",owner.last_name) as customer, service_category.category_description as description,  service_request.est_hours as E_Hours, service_request.spent_hours as S_Hours from service_request join service_category on service_category.category_num = service_request.category_num join marina_slip on  marina_slip.slip_id = service_request.slip_id join owner on owner.owner_num = marina_slip.owner_num group by description;
++----------------------+---------------------+---------+---------+
+| customer             | description         | E_Hours | S_Hours |
++----------------------+---------------------+---------+---------+
+| Daniel Feenstra      | Canvas installation |       8 |       0 |
+| Bruce and Jean Adney | Engine repair       |       2 |       0 |
+| Bruce and Jean Adney | Engine repair       |       4 |       1 |
+| Daniel Feenstra      | Fiberglass repair   |       6 |       0 |
++----------------------+---------------------+---------+---------+
+4 rows in set, 1 warning (0.00 sec)
+
+mysql> select concat(owner.first_name, " ",owner.last_name) as customer, service_category.category_description as description,  service_request.est_hours as E_Hours, service_request.spent_hours as S_Hours from service_request join service_category on service_category.category_num = service_request.category_num join marina_slip on  marina_slip.slip_id = service_request.slip_id join owner on owner.owner_num = marina_slip.owner_num group by description, customer;
++----------------------+---------------------+---------+---------+
+| customer             | description         | E_Hours | S_Hours |
++----------------------+---------------------+---------+---------+
+| Daniel Feenstra      | Canvas installation |       8 |       0 |
+| Bruce and Jean Adney | Engine repair       |       2 |       0 |
+| Bruce and Jean Adney | Engine repair       |       4 |       1 |
+| Daniel Feenstra      | Fiberglass repair   |       6 |       0 |
++----------------------+---------------------+---------+---------+
+4 rows in set, 1 warning (0.00 sec)
+
+mysql> select concat(owner.first_name, " ",owner.last_name) as customer, service_category.category_description as description,  service_request.est_hours as E_Hours, service_request.spent_hours as S_Hours from service_request join service_category on service_category.category_num = service_request.category_num join marina_slip on  marina_slip.slip_id = service_request.slip_id join owner on owner.owner_num = marina_slip.owner_num group by categorry_description, customer;
+ERROR 1054 (42S22): Unknown column 'categorry_description' in 'group statement'
+mysql> select concat(owner.first_name, " ",owner.last_name) as customer, service_category.category_description as description,  service_request.est_hours as E_Hours, service_request.spent_hours as S_Hours from service_request join service_category on service_category.category_num = service_request.category_num join marina_slip on  marina_slip.slip_id = service_request.slip_id join owner on owner.owner_num = marina_slip.owner_num group by category.description, customer;
+ERROR 1054 (42S22): Unknown column 'category.description' in 'group statement'
+mysql> select concat(owner.first_name, " ",owner.last_name) as customer, service_category.category_description as description,  service_request.est_hours as E_Hours, service_request.spent_hours as S_Hours from service_request join service_category on service_category.category_num = service_request.category_num join marina_slip on  marina_slip.slip_id = service_request.slip_id join owner on owner.owner_num = marina_slip.owner_num group by service_category.category_description, customer;
++----------------------+---------------------+---------+---------+
+| customer             | description         | E_Hours | S_Hours |
++----------------------+---------------------+---------+---------+
+| Daniel Feenstra      | Canvas installation |       8 |       0 |
+| Bruce and Jean Adney | Engine repair       |       2 |       0 |
+| Daniel Feenstra      | Fiberglass repair   |       6 |       0 |
++----------------------+---------------------+---------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select concat(owner.first_name, " ",owner.last_name) as customer, service_category.category_description as description,  
+service_request.est_hours as E_Hours, service_request.spent_hours as S_Hours from service_request join service_category on 
+service_category.category_num = service_request.category_num join marina_slip on  marina_slip.slip_id = service_request.slip_id 
+join owner on owner.owner_num = marina_slip.owner_num group by service_category.category_description;
++----------------------+---------------------+---------+---------+
+| customer             | description         | E_Hours | S_Hours |
++----------------------+---------------------+---------+---------+
+| Daniel Feenstra      | Canvas installation |       8 |       0 |
+| Bruce and Jean Adney | Engine repair       |       2 |       0 |
+| Daniel Feenstra      | Fiberglass repair   |       6 |       0 |
++----------------------+---------------------+---------+---------+
+3 rows in set (0.00 sec)
+
+mysql> show databases;
++------------------------+
+| Database               |
++------------------------+
+| information_schema     |
+| alexamara_marina_group |
+| henry_books            |
+| music                  |
+| mysql                  |
+| performance_schema     |
+| premiere               |
+| sys                    |
++------------------------+
+8 rows in set (0.00 sec)
+
+mysql> use henry_books;
+Database changed
+mysql> show tables from book;
+ERROR 1049 (42000): Unknown database 'book'
+mysql> show tables from books;
+ERROR 1049 (42000): Unknown database 'books'
+mysql> show columns from book;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| book_code      | varchar(5)   | NO   | PRI | NULL    |       |
+| title          | varchar(80)  | YES  |     | NULL    |       |
+| publisher_code | char(2)      | YES  |     | NULL    |       |
+| type           | char(3)      | YES  |     | NULL    |       |
+| price          | decimal(5,2) | YES  |     | NULL    |       |
+| paperback      | varchar(3)   | YES  |     | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> select concat(author.author_first, " ", author.author_last) as author_name, book.title as book_title, book.price from book   join wrote on wrote.book_code = book.book_code  join author on author.author_num = wrote.author_num;
++-----------------------+-------------------------------------+-------+
+| author_name           | book_title                          | price |
++-----------------------+-------------------------------------+-------+
+| Stephen E. King       | Dreamcatcher: A Novel               | 19.60 |
+| Randy O'Rourke        | Treasure Chests                     | 24.46 |
+| Lon Schleining        | Treasure Chests                     | 24.46 |
+| Bradley Collis        | Van Gogh and Gauguin                | 21.00 |
+| Bradley Collins, Jr.  | Van Gogh and Gauguin                | 21.00 |
+| John Steinbeck        | Of Mice and Men                     |  6.95 |
+| Seamus Heaney         | Electric Light                      | 14.00 |
+| Paul Solotaroff       | Group: Six People in Search of Life | 10.40 |
+| J.D Salinger          | Nine Stories                        |  5.99 |
+| Tracy Kidder          | The Soul of a New Machine           | 11.16 |
+| John Steinbeck        | Travels with Charley                |  7.95 |
+| Joseph Heller         | Catch-22                            | 12.00 |
+| Toni Morrison         | Jazz                                | 12.95 |
+| Stephen E. Ambrose    | Band of Brothers                    |  9.60 |
+| J.D Salinger          | Franny and Zooey                    |  5.99 |
+| John Steinbeck        | East of Eden                        | 12.95 |
+| J.K. Rowling          | Harry Potter and the Goblet of Fire | 18.16 |
+| Albert Camus          | The Fall                            |  8.00 |
+| Douglas R. Hofstadter | Godel, Escher, Bach                 | 14.00 |
+| Truddi Chase          | When Rabbit Howls                   |  6.29 |
+| Peter Straub          | Black House                         | 18.81 |
+| Stephen E. King       | Black House                         | 18.81 |
+| Toni Morrison         | Song of Solomon                     | 14.00 |
+| John Steinbeck        | The Graps of Wrath                  | 13.00 |
+| Dick Francis          | Slay Ride                           |  6.99 |
+| J.D Salinger          | The Catcher in the Rye              |  5.99 |
+| Harper Lee            | To Kill a Mockingbird               | 18.00 |
++-----------------------+-------------------------------------+-------+
+27 rows in set (0.00 sec)
+
+mysql> show columns from publisher;
++----------------+-------------+------+-----+---------+-------+
+| Field          | Type        | Null | Key | Default | Extra |
++----------------+-------------+------+-----+---------+-------+
+| publisher_code | varchar(3)  | NO   | PRI | NULL    |       |
+| publisher_name | varchar(80) | YES  |     | NULL    |       |
+| city           | varchar(50) | YES  |     | NULL    |       |
++----------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select book.book_code, book.title, publisher.publisher_name, book.type, book.price from book   join publisher on publisher.publisher_code = book.publisher_code;
++-----------+------------------------------------------+--------------------------+------+-------+
+| book_code | title                                    | publisher_name           | type | price |
++-----------+------------------------------------------+--------------------------+------+-------+
+| 1351      | Dreamcatcher: A Novel                    | Scribner                 | HOR  | 19.60 |
+| 1382      | Treasure Chests                          | Taunton Press            | ART  | 24.46 |
+| 180       | A Deepness in the Sky                    | Tor Books                | SFI  |  7.19 |
+| 189       | Magic Terror                             | Fawcett Books            | HOR  |  7.99 |
+| 200       | The Stranger                             | Vintage Books            | FIC  |  8.00 |
+| 2226      | Harry Potter and the Prisoner of Askaban | Scholastic Trade         | SFI  | 13.96 |
+| 2281      | Van Gogh and Gauguin                     | Westview Press           | ART  | 21.00 |
+| 2766      | Of Mice and Men                          | Penguin USA              | FIC  |  6.95 |
+| 2908      | Electric Light                           | Farrar Straus and Giroux | POE  | 14.00 |
+| 3350      | Group: Six People in Search of Life      | Berkley Publishing       | PSY  | 10.40 |
+| 3743      | Nine Stories                             | Lb Books                 | FIC  |  5.99 |
+| 378       | Venice                                   | Simon and Schuster       | ART  | 24.50 |
+| 3906      | The Soul of a New Machine                | Back Bay Books           | SCI  | 11.16 |
+| 5163      | Travels with Charley                     | Penguin USA              | TRA  |  7.95 |
+| 5790      | Catch-22                                 | Scribner                 | FIC  | 12.00 |
+| 6128      | Jazz                                     | Plume                    | FIC  | 12.95 |
+| 6328      | Band of Brothers                         | Touchstone Books         | HIS  |  9.60 |
+| 6908      | Franny and Zooey                         | Lb Books                 | FIC  |  5.99 |
+| 7405      | East of Eden                             | Penguin USA              | FIC  | 12.95 |
+| 7443      | Harry Potter and the Goblet of Fire      | Scholastic Trade         | SFI  | 18.16 |
+| 7559      | The Fall                                 | Vintage Books            | FIC  |  8.00 |
+| 808       | The Edge                                 | Jove Publications        | MYS  |  6.99 |
+| 8092      | Godel, Escher, Bach                      | Basic Books              | PHI  | 14.00 |
+| 8720      | When Rabbit Howls                        | Jove Publications        | PSY  |  6.29 |
+| 9611      | Black House                              | Random House             | HOR  | 18.81 |
+| 9627      | Song of Solomon                          | Plume                    | FIC  | 14.00 |
+| 9701      | The Graps of Wrath                       | Penguin USA              | FIC  | 13.00 |
+| 9882      | Slay Ride                                | Jove Publications        | MYS  |  6.99 |
+| 9883      | The Catcher in the Rye                   | Lb Books                 | FIC  |  5.99 |
+| 9931      | To Kill a Mockingbird                    | HarperCollins Publishers | FIC  | 18.00 |
++-----------+------------------------------------------+--------------------------+------+-------+
+30 rows in set (0.00 sec)
+
+mysql> select * from branch;
++------------+-------------------+-----------------+---------------+
+| branch_num | branch_name       | branch_location | num_employees |
++------------+-------------------+-----------------+---------------+
+|          1 | Henry Downtown    | 16 Riverview    |            10 |
+|          2 | Henry On The Hill | 1289 Bedford    |             6 |
+|          3 | Henry Brentwood   | Brentwood Mall  |            15 |
+|          4 | Henry Eastshore   | Eastshore Mall  |             9 |
++------------+-------------------+-----------------+---------------+
+4 rows in set (0.00 sec)
+
+mysql>  select branch.branch_name, book.type, sum(inventory.on_hand) as total_books_on_hand from inventory   join branch on branch.branch_num = inventory.branch_num  join book on book.book_code = inventory.book_code  group by branch.branch_name, book.type;
++-------------------+------+---------------------+
+| branch_name       | type | total_books_on_hand |
++-------------------+------+---------------------+
+| Henry Brentwood   | ART  |                   2 |
+| Henry Brentwood   | FIC  |                  15 |
+| Henry Brentwood   | HOR  |                   2 |
+| Henry Brentwood   | MYS  |                   3 |
+| Henry Brentwood   | PHI  |                   1 |
+| Henry Brentwood   | SCI  |                   2 |
+| Henry Brentwood   | SFI  |                   2 |
+| Henry Downtown    | FIC  |                   5 |
+| Henry Downtown    | HOR  |                   2 |
+| Henry Downtown    | POE  |                   3 |
+| Henry Downtown    | PSY  |                   5 |
+| Henry Downtown    | SFI  |                   3 |
+| Henry Downtown    | TRA  |                   1 |
+| Henry Eastshore   | ART  |                   3 |
+| Henry Eastshore   | FIC  |                   8 |
+| Henry Eastshore   | POE  |                   1 |
+| Henry Eastshore   | SFI  |                   2 |
+| Henry On The Hill | ART  |                   1 |
+| Henry On The Hill | FIC  |                  16 |
+| Henry On The Hill | HIS  |                   2 |
+| Henry On The Hill | HOR  |                   6 |
+| Henry On The Hill | MYS  |                   1 |
+| Henry On The Hill | SCI  |                   1 |
++-------------------+------+---------------------+
+23 rows in set (0.00 sec)
+
+mysql>  select branch.branch_name, book.type, sum(inventory.on_hand) as total_books_on_hand from inventory   join branch on branch.branch_num = inventory.branch_num  join book on book.book_code = inventory.book_code  group by branch.branch_name;
++-------------------+------+---------------------+
+| branch_name       | type | total_books_on_hand |
++-------------------+------+---------------------+
+| Henry Brentwood   | HOR  |                  27 |
+| Henry Downtown    | FIC  |                  19 |
+| Henry Eastshore   | SFI  |                  14 |
+| Henry On The Hill | HOR  |                  27 |
++-------------------+------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql>  select branch.branch_name, book.type, sum(inventory.on_hand) as total_books_on_hand from inventory   join branch on branch.branch_num = inventory.branch_num  join book on book.book_code = inventory.book_code  group by branch.branch_name, book.type;
++-------------------+------+---------------------+
+| branch_name       | type | total_books_on_hand |
++-------------------+------+---------------------+
+| Henry Brentwood   | ART  |                   2 |
+| Henry Brentwood   | FIC  |                  15 |
+| Henry Brentwood   | HOR  |                   2 |
+| Henry Brentwood   | MYS  |                   3 |
+| Henry Brentwood   | PHI  |                   1 |
+| Henry Brentwood   | SCI  |                   2 |
+| Henry Brentwood   | SFI  |                   2 |
+| Henry Downtown    | FIC  |                   5 |
+| Henry Downtown    | HOR  |                   2 |
+| Henry Downtown    | POE  |                   3 |
+| Henry Downtown    | PSY  |                   5 |
+| Henry Downtown    | SFI  |                   3 |
+| Henry Downtown    | TRA  |                   1 |
+| Henry Eastshore   | ART  |                   3 |
+| Henry Eastshore   | FIC  |                   8 |
+| Henry Eastshore   | POE  |                   1 |
+| Henry Eastshore   | SFI  |                   2 |
+| Henry On The Hill | ART  |                   1 |
+| Henry On The Hill | FIC  |                  16 |
+| Henry On The Hill | HIS  |                   2 |
+| Henry On The Hill | HOR  |                   6 |
+| Henry On The Hill | MYS  |                   1 |
+| Henry On The Hill | SCI  |                   1 |
++-------------------+------+---------------------+
+23 rows in set (0.02 sec)
+
+mysql>  select branch.branch_name, sum(inventory.on_hand) as total_books_on_hand from inventory join branch on branch.branch_num = inventory.branch_num  join book on book.book_code = inventory.book_code  group by branch.branch_name, book.type;
++-------------------+---------------------+
+| branch_name       | total_books_on_hand |
++-------------------+---------------------+
+| Henry Brentwood   |                   2 |
+| Henry Brentwood   |                  15 |
+| Henry Brentwood   |                   2 |
+| Henry Brentwood   |                   3 |
+| Henry Brentwood   |                   1 |
+| Henry Brentwood   |                   2 |
+| Henry Brentwood   |                   2 |
+| Henry Downtown    |                   5 |
+| Henry Downtown    |                   2 |
+| Henry Downtown    |                   3 |
+| Henry Downtown    |                   5 |
+| Henry Downtown    |                   3 |
+| Henry Downtown    |                   1 |
+| Henry Eastshore   |                   3 |
+| Henry Eastshore   |                   8 |
+| Henry Eastshore   |                   1 |
+| Henry Eastshore   |                   2 |
+| Henry On The Hill |                   1 |
+| Henry On The Hill |                  16 |
+| Henry On The Hill |                   2 |
+| Henry On The Hill |                   6 |
+| Henry On The Hill |                   1 |
+| Henry On The Hill |                   1 |
++-------------------+---------------------+
+23 rows in set (0.00 sec)
+
+mysql>  select branch.branch_name, book.type, sum(inventory.on_hand) as total_books_on_hand from inventory   join branch on branch.branch_num = inventory.branch_num  join book on book.book_code = inventory.book_code  group by branch.branch_name, book.type;
++-------------------+------+---------------------+
+| branch_name       | type | total_books_on_hand |
++-------------------+------+---------------------+
+| Henry Brentwood   | ART  |                   2 |
+| Henry Brentwood   | FIC  |                  15 |
+| Henry Brentwood   | HOR  |                   2 |
+| Henry Brentwood   | MYS  |                   3 |
+| Henry Brentwood   | PHI  |                   1 |
+| Henry Brentwood   | SCI  |                   2 |
+| Henry Brentwood   | SFI  |                   2 |
+| Henry Downtown    | FIC  |                   5 |
+| Henry Downtown    | HOR  |                   2 |
+| Henry Downtown    | POE  |                   3 |
+| Henry Downtown    | PSY  |                   5 |
+| Henry Downtown    | SFI  |                   3 |
+| Henry Downtown    | TRA  |                   1 |
+| Henry Eastshore   | ART  |                   3 |
+| Henry Eastshore   | FIC  |                   8 |
+| Henry Eastshore   | POE  |                   1 |
+| Henry Eastshore   | SFI  |                   2 |
+| Henry On The Hill | ART  |                   1 |
+| Henry On The Hill | FIC  |                  16 |
+| Henry On The Hill | HIS  |                   2 |
+| Henry On The Hill | HOR  |                   6 |
+| Henry On The Hill | MYS  |                   1 |
+| Henry On The Hill | SCI  |                   1 |
++-------------------+------+---------------------+
+23 rows in set (0.00 sec)
+
+mysql> exit;

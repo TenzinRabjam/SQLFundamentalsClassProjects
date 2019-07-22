@@ -1,0 +1,310 @@
+mysql> SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER JOIN PART ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM
+    -> JOIN ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM
+    -> JOIN PART.PART_NUM = ORDER_LINE.PART_NUM
+    -> JOIN REP.REP_NUM = CUSTOMER.REP_NUM;
+ERROR 1046 (3D000): No database selected
+mysql> USE PREMIERE;
+Database changed
+mysql> SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER JOIN PART ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM
+    -> JOIN ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM
+    -> JOIN PART.PART_NUM = ORDER_LINE.PART_NUM
+    -> JOIN REP.REP_NUM = CUSTOMER.REP_NUM;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '.ORDER_NUM
+JOIN PART.PART_NUM = ORDER_LINE.PART_NUM
+JOIN REP.REP_NUM = CUSTOMER.' at line 2
+mysql> 
+mysql> SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER JOIN PART ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM    JOIN REP.REP_NUM = CUSTOMER.REP_NUMJOIN ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUMJOIN ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM    JOIN PART.PART_NUM = ORDER_LINE.PART_NUM;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '.REP_NUMJOIN ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUMJOIN ORDER_LINE.ORDER_NU' at line 1
+mysql> SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER JOIN PART ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM     JOIN REP.REP_NUM = CUSTOMER.REP_NUMJOIN ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM JOIN ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM     JOIN PART.PART_NUM = ORDER_LINE.PART_NUM
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '.REP_NUMJOIN ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM JOIN ORDER_LINE.ORDER_N' at line 1
+mysql> SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER JOIN PART ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM     JOIN REP.REP_NUM = CUSTOMER.REP_NUM JOIN ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM JOIN ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM     JOIN PART.PART_NUM = ORDER_LINE.PART_NUM;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '.REP_NUM JOIN ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM JOIN ORDER_LINE.ORDER_' at line 1
+mysql> SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER        JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM JOIN ORDERS ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM JOIN ORDER_LINE ON ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM     JOIN PART ON PART.PART_NUM = ORDER_LINE.PART_NUM;
++------------+-----------+----------------------------+------------+----------------+
+| FIRST_NAME | LAST_NAME | CUSTOMER_NAME              | CITY       | DESCRIPTION    |
++------------+-----------+----------------------------+------------+----------------+
+| Juan       | Perez     | Johnson's Department Store | Sheldon    | Home Gym       |
+| Juan       | Perez     | Johnson's Department Store | Sheldon    | Microwave Oven |
+| Juan       | Perez     | Ferguson's                 | Northfield | Gas Range      |
+| Valerie    | Kaiser    | Al's Appliance and Sport   | Filmore    | Gas Range      |
+| Juan       | Perez     | Ferguson's                 | Northfield | Washer         |
+| Richard    | Hull      | The Everything Shop        | Crystal    | Dryer          |
+| Richard    | Hull      | Brooking Direct            | Grove      | Dishwasher     |
+| Juan       | Perez     | Johnson's Department Store | Sheldon    | Treadmill      |
+| Valerie    | Kaiser    | Al's Appliance and Sport   | Filmore    | Iron           |
++------------+-----------+----------------------------+------------+----------------+
+9 rows in set (0.00 sec)
+
+mysql>  SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER        JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM JOIN ORDERS ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM JOIN ORDER_LINE ON ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM     JOIN PART ON PART.PART_NUM = ORDER_LINE.PART_NUMORDER BY CUSTOMER.CUSTOMER_NAME;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'BY CUSTOMER.CUSTOMER_NAME' at line 1
+mysql>  SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER        JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM JOIN ORDERS ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM JOIN ORDER_LINE ON ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM     JOIN PART ON PART.PART_NUM = ORDER_LINE.PART_NUM ORDER BY CUSTOMER.CUSTOMER_NAME;
++------------+-----------+----------------------------+------------+----------------+
+| FIRST_NAME | LAST_NAME | CUSTOMER_NAME              | CITY       | DESCRIPTION    |
++------------+-----------+----------------------------+------------+----------------+
+| Valerie    | Kaiser    | Al's Appliance and Sport   | Filmore    | Gas Range      |
+| Valerie    | Kaiser    | Al's Appliance and Sport   | Filmore    | Iron           |
+| Richard    | Hull      | Brooking Direct            | Grove      | Dishwasher     |
+| Juan       | Perez     | Ferguson's                 | Northfield | Washer         |
+| Juan       | Perez     | Ferguson's                 | Northfield | Gas Range      |
+| Juan       | Perez     | Johnson's Department Store | Sheldon    | Home Gym       |
+| Juan       | Perez     | Johnson's Department Store | Sheldon    | Treadmill      |
+| Juan       | Perez     | Johnson's Department Store | Sheldon    | Microwave Oven |
+| Richard    | Hull      | The Everything Shop        | Crystal    | Dryer          |
++------------+-----------+----------------------------+------------+----------------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER        JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM JOIN ORDERS ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM JOIN ORDER_LINE ON ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM     JOIN PART ON PART.PART_NUM = ORDER_LINE.PART_NUMORDER BY CUSTOMER.CUSTOMER_NAME, REP.FIRST_NAME;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'BY CUSTOMER.CUSTOMER_NAME, REP.FIRST_NAME' at line 1
+mysql> SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER        JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM JOIN ORDERS ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM JOIN ORDER_LINE ON ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM     JOIN PART ON PART.PART_NUM = ORDER_LINE.PART_NUMORDER BY CUSTOMER.CUSTOMER_NAME, REP.FIRST_NAME;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'BY CUSTOMER.CUSTOMER_NAME, REP.FIRST_NAME' at line 1
+mysql>  SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER        JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM JOIN ORDERS ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM JOIN ORDER_LINE ON ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM     JOIN PART ON PART.PART_NUM = ORDER_LINE.PART_NUMORDER BY CUSTOMER.CUSTOMER_NAME REP.FIRST_NAME;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'BY CUSTOMER.CUSTOMER_NAME REP.FIRST_NAME' at line 1
+mysql>  SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER        JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM JOIN ORDERS ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM JOIN ORDER_LINE ON ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM     JOIN PART ON PART.PART_NUM = ORDER_LINE.PART_NUMORDER BY CUSTOMER.CUSTOMER_NAME;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'BY CUSTOMER.CUSTOMER_NAME' at line 1
+mysql>  SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER        JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM JOIN ORDERS ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM JOIN ORDER_LINE ON ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM     JOIN PART ON PART.PART_NUM = ORDER_LINE.PART_NUM ORDER BY CUSTOMER.CUSTOMER_NAME REP.FIRST_NAME;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'REP.FIRST_NAME' at line 1
+mysql>  SELECT REP.FIRST_NAME, REP.LAST_NAME, CUSTOMER.CUSTOMER_NAME, CUSTOMER.CITY, PART.DESCRIPTION FROM CUSTOMER        JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM JOIN ORDERS ON ORDERS.CUSTOMER_NUM = CUSTOMER.CUSTOMER_NUM JOIN ORDER_LINE ON ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM     JOIN PART ON PART.PART_NUM = ORDER_LINE.PART_NUM ORDER BY CUSTOMER.CUSTOMER_NAME, REP.FIRST_NAME;
++------------+-----------+----------------------------+------------+----------------+
+| FIRST_NAME | LAST_NAME | CUSTOMER_NAME              | CITY       | DESCRIPTION    |
++------------+-----------+----------------------------+------------+----------------+
+| Valerie    | Kaiser    | Al's Appliance and Sport   | Filmore    | Gas Range      |
+| Valerie    | Kaiser    | Al's Appliance and Sport   | Filmore    | Iron           |
+| Richard    | Hull      | Brooking Direct            | Grove      | Dishwasher     |
+| Juan       | Perez     | Ferguson's                 | Northfield | Washer         |
+| Juan       | Perez     | Ferguson's                 | Northfield | Gas Range      |
+| Juan       | Perez     | Johnson's Department Store | Sheldon    | Home Gym       |
+| Juan       | Perez     | Johnson's Department Store | Sheldon    | Treadmill      |
+| Juan       | Perez     | Johnson's Department Store | Sheldon    | Microwave Oven |
+| Richard    | Hull      | The Everything Shop        | Crystal    | Dryer          |
++------------+-----------+----------------------------+------------+----------------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT F.CUSTOMER_NUM, F.CUSTOMER_NUM, S.CUSTOMER_NUM,S.CUSTOMER_NAME,S.CITY FROM CUSTOMER F JOIN CUSTOMER S ON S.CITY = F.CITY WHERE F.CUSTOMER_NUM > S.CUSTOMER_NUM;
++--------------+--------------+--------------+----------------------------+---------+
+| CUSTOMER_NUM | CUSTOMER_NUM | CUSTOMER_NUM | CUSTOMER_NAME              | CITY    |
++--------------+--------------+--------------+----------------------------+---------+
+|          462 |          462 |          282 | Brooking Direct            | Grove   |
+|          524 |          524 |          148 | Al's Appliance and Sport   | Filmore |
+|          725 |          725 |          608 | Johnson's Department Store | Sheldon |
+|          842 |          842 |          282 | Brooking Direct            | Grove   |
+|          842 |          842 |          462 | Bargains Galore            | Grove   |
++--------------+--------------+--------------+----------------------------+---------+
+5 rows in set (0.00 sec)
+
+mysql> SOURCE Downloads/import-generic-company-1.SQL;
+ERROR: 
+Failed to open file 'Downloads\import-generic-company-1.SQL', error: 2
+mysql> SOURCE Downloads/import-generic-company-1.SQL;
+ERROR: 
+Failed to open file 'Downloads\import-generic-company-1.SQL', error: 2
+mysql> SOURCE Downloads/import-generic-company-1.TXT;
+ERROR: 
+Failed to open file 'Downloads\import-generic-company-1.TXT', error: 2
+mysql> DROP DATABASE IF EXISTS GENERIC_COMPANY;CREATE DATABASE GENERIC_COMPANY;USE GENERIC_COMPANY;CREATE TABLE EMPLOYEE(EMPLOYEE_NUM INT PRIMARY KEY,LAST_NAME CHAR(25),FIRST_NAME CHAR(25),MGR_EMPLOYEE_NUM INT);INSERT INTO EMPLOYEE (EMPLOYEE_NUM, LAST_NAME, FIRST_NAME, MGR_EMPLOYEE_NUM)VALUES (108, 'Holden', 'Martin', NULL),(198, 'Canzler', 'Mona', 108),(206, 'Dykstra', 'Joan', 198),(255, 'Murray', 'Steven', 301),(301, 'Galvez', 'Benito', 108),(366, 'Peterman', 'Beth', 198),(391, 'Traynor', 'Matt', 301),(402, 'Brent', 'Ashton', 301),(466, 'Scholten', 'Alyssa', 108),(551, 'Wiltzer', 'Morgan', 198);
+Query OK, 0 rows affected, 1 warning (0.09 sec)
+
+Query OK, 1 row affected (0.38 sec)
+
+Database changed
+Query OK, 0 rows affected (0.22 sec)
+
+Query OK, 10 rows affected (0.05 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> SHOW TABLES;
++---------------------------+
+| Tables_in_generic_company |
++---------------------------+
+| employee                  |
++---------------------------+
+1 row in set (0.00 sec)
+
+mysql> SOURCE C:/Users/trabjam/Desktop/import-generic-company-1.TXT;
+ERROR: 
+Failed to open file 'C:\Users\trabjam\Desktop\import-generic-company-1.TXT', error: 2
+mysql> SOURCE C:/Users/trabjam/Desktop/import-generic-company-1.SQL;
+Query OK, 1 row affected (0.34 sec)
+
+Query OK, 1 row affected (0.00 sec)
+
+Database changed
+Query OK, 0 rows affected (0.20 sec)
+
+Query OK, 10 rows affected (0.03 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> SHOW TABLES;
++---------------------------+
+| Tables_in_generic_company |
++---------------------------+
+| employee                  |
++---------------------------+
+1 row in set (0.00 sec)
+
+mysql> use alexamara_marina_group
+Database changed
+mysql> show tables;
++----------------------------------+
+| Tables_in_alexamara_marina_group |
++----------------------------------+
+| marina                           |
+| marina_slip                      |
+| owner                            |
+| service_category                 |
+| service_request                  |
++----------------------------------+
+5 rows in set (0.00 sec)
+
+mysql> show columns from service_request;
++-------------------+--------------+------+-----+---------+-------+
+| Field             | Type         | Null | Key | Default | Extra |
++-------------------+--------------+------+-----+---------+-------+
+| service_id        | int(5)       | NO   | PRI | NULL    |       |
+| slip_id           | int(3)       | YES  |     | NULL    |       |
+| category_num      | int(3)       | YES  |     | NULL    |       |
+| description       | varchar(300) | YES  |     | NULL    |       |
+| status            | varchar(200) | YES  |     | NULL    |       |
+| est_hours         | int(3)       | YES  |     | NULL    |       |
+| spent_hours       | int(3)       | YES  |     | NULL    |       |
+| next_service_date | varchar(10)  | YES  |     | NULL    |       |
++-------------------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> show columns from marina_slip;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| slip_id    | int(4)       | NO   | PRI | NULL    |       |
+| marina_num | int(4)       | YES  |     | NULL    |       |
+| slip_num   | varchar(3)   | YES  |     | NULL    |       |
+| length     | int(4)       | YES  |     | NULL    |       |
+| rental_fee | decimal(8,2) | YES  |     | NULL    |       |
+| boat_name  | varchar(80)  | YES  |     | NULL    |       |
+| boat_type  | varchar(30)  | YES  |     | NULL    |       |
+| owner_num  | varchar(5)   | YES  |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> show tables from marina;
+ERROR 1049 (42000): Unknown database 'marina'
+mysql> show columns from marina;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| marina_num | int(4)      | NO   | PRI | NULL    |       |
+| name       | varchar(50) | YES  |     | NULL    |       |
+| address    | varchar(80) | YES  |     | NULL    |       |
+| city       | varchar(40) | YES  |     | NULL    |       |
+| state      | char(2)     | YES  |     | NULL    |       |
+| zip        | varchar(10) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> show columns from service_category;
++----------------------+-------------+------+-----+---------+-------+
+| Field                | Type        | Null | Key | Default | Extra |
++----------------------+-------------+------+-----+---------+-------+
+| category_num         | int(4)      | NO   | PRI | NULL    |       |
+| category_description | varchar(80) | YES  |     | NULL    |       |
++----------------------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> alter table service_request modify column slip_id int(4);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show columns from service_request;
++-------------------+--------------+------+-----+---------+-------+
+| Field             | Type         | Null | Key | Default | Extra |
++-------------------+--------------+------+-----+---------+-------+
+| service_id        | int(5)       | NO   | PRI | NULL    |       |
+| slip_id           | int(4)       | YES  |     | NULL    |       |
+| category_num      | int(3)       | YES  |     | NULL    |       |
+| description       | varchar(300) | YES  |     | NULL    |       |
+| status            | varchar(200) | YES  |     | NULL    |       |
+| est_hours         | int(3)       | YES  |     | NULL    |       |
+| spent_hours       | int(3)       | YES  |     | NULL    |       |
+| next_service_date | varchar(10)  | YES  |     | NULL    |       |
++-------------------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> alter table service_request modify column category_num int(4);
+Query OK, 0 rows affected (0.13 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show columns from service_request;
++-------------------+--------------+------+-----+---------+-------+
+| Field             | Type         | Null | Key | Default | Extra |
++-------------------+--------------+------+-----+---------+-------+
+| service_id        | int(5)       | NO   | PRI | NULL    |       |
+| slip_id           | int(4)       | YES  |     | NULL    |       |
+| category_num      | int(4)       | YES  |     | NULL    |       |
+| description       | varchar(300) | YES  |     | NULL    |       |
+| status            | varchar(200) | YES  |     | NULL    |       |
+| est_hours         | int(3)       | YES  |     | NULL    |       |
+| spent_hours       | int(3)       | YES  |     | NULL    |       |
+| next_service_date | varchar(10)  | YES  |     | NULL    |       |
++-------------------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> select concat(owner.first_name, " ",owner.last_name) as customer, service_category.category_description as description,  service_request.est_hours as E_Hours, service_request.spent_hours as S_Hours from service_request join service_category on service_category.category_num = service_request.category_num join marina_slip on  marina_slip.slip_id = service_request.slip_id join owner on owner.owner_num = marina_slip.owner_num group by service_category.category_description, customer;
++----------------------+---------------------+---------+---------+
+| customer             | description         | E_Hours | S_Hours |
++----------------------+---------------------+---------+---------+
+| Daniel Feenstra      | Canvas installation |       8 |       0 |
+| Bruce and Jean Adney | Engine repair       |       2 |       0 |
+| Daniel Feenstra      | Fiberglass repair   |       6 |       0 |
++----------------------+---------------------+---------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select concat(owner.first_name, " ",owner.last_name) as customer, service_category.category_description as description,  service_request.est_hours as E_Hours, service_request.spent_hours as S_Hours from service_request join service_category on service_category.category_num = service_request.category_num join marina_slip on  marina_slip.slip_id = service_request.slip_id join owner on owner.owner_num = marina_slip.owner_num;
++----------------------+---------------------+---------+---------+
+| customer             | description         | E_Hours | S_Hours |
++----------------------+---------------------+---------+---------+
+| Bruce and Jean Adney | Engine repair       |       2 |       0 |
+| Bruce and Jean Adney | Engine repair       |       4 |       1 |
+| Daniel Feenstra      | Canvas installation |       8 |       0 |
+| Daniel Feenstra      | Fiberglass repair   |       6 |       0 |
++----------------------+---------------------+---------+---------+
+4 rows in set (0.00 sec)
+
+mysql> exit
+mysql> USE PREMIERE;
+Database changed
+mysql> SELECT CUSTOMER.CUSTOMER_NAME,REP.LAST_NAMEFROM CUSTOMERLEFT JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM' at line 1
+mysql> SELECT CUSTOMER.CUSTOMER_NAME,REP.LAST_NAMEFROM CUSTOMERLEFT JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM' at line 1
+mysql> SHOW TABLES;
++--------------------+
+| Tables_in_premiere |
++--------------------+
+| customer           |
+| order_line         |
+| orders             |
+| part               |
+| rep                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT CUSTOMER.CUSTOMER_NAME,REP.LAST_NAMEFROM CUSTOMERLEFT JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM' at line 1
+mysql> SELECT CUSTOMER.CUSTOMER_NAME,REP.LAST_NAME FROM CUSTOMER LEFT JOIN REP ON REP.REP_NUM = CUSTOMER.REP_NUM;
++----------------------------+-----------+
+| CUSTOMER_NAME              | LAST_NAME |
++----------------------------+-----------+
+| Al's Appliance and Sport   | Kaiser    |
+| Kilne's                    | Kaiser    |
+| All Season                 | Kaiser    |
+| Brooking Direct            | Hull      |
+| The Everything Shop        | Hull      |
+| Lee's Sport and Appliance  | Hull      |
+| Deerfield's Four Seasons   | Hull      |
+| Ferguson's                 | Perez     |
+| Bargains Galore            | Perez     |
+| Johnson's Department Store | Perez     |
++----------------------------+-----------+
+10 rows in set (0.13 sec)
+
+mysql> EXIT

@@ -1,0 +1,527 @@
+mysql> CREATE USER 'Ashton' IDENTIFIED BY 'PASSWORD';CREATE USER 'Kelly' IDENTIFIED BY   'PASSWORD';CREATE USER 'Morgan' IDENTIFIED BY 'PASSWORD';CREATE USER 'James' IDENTIFIED BY   'PASSWORD';CREATE USER 'Danielson' IDENTIFIED BY 'PASSWORD';CREATE USER 'Perez' IDENTIFIED BY   'PASSWORD';CREATE USER 'Washington' IDENTIFIED BY   'PASSWORD';CREATE USER 'Grinstead' IDENTIFIED BY 'PASSWORD';USE MYSQL;SELECT USER FROM USER;USE PREMIERE;
+Query OK, 0 rows affected (0.15 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Database changed
+mysql> CREATE VIEW MAJOR_CUSTOMER AS SELECT CUSTOMER_NUM, CUSTOMER_NAME, BALANCE, CREDIT_LIMIT, REP_NUM FROM CUSTOMER WHERE CREDIT_LIMIT < 10000;
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> SELECT * FROM MAJOR_CUSTOMER;
++--------------+---------------------------+---------+--------------+---------+
+| CUSTOMER_NUM | CUSTOMER_NAME             | BALANCE | CREDIT_LIMIT | REP_NUM |
++--------------+---------------------------+---------+--------------+---------+
+| 148          | Al's Appliance and Sport  | 6550.00 |      7500.00 | 20      |
+| 356          | Ferguson's                | 5785.00 |      7500.00 | 65      |
+| 408          | The Everything Shop       | 5285.25 |      5000.00 | 35      |
+| 687          | Lee's Sport and Appliance | 2851.00 |      5000.00 | 35      |
+| 725          | Deerfield's Four Seasons  |  248.00 |      7500.00 | 35      |
+| 842          | All Season                | 8221.00 |      7500.00 | 20      |
++--------------+---------------------------+---------+--------------+---------+
+6 rows in set (0.04 sec)
+
+mysql> SELECT CUSTOMER_NUM, CUSTOMER_NAME FROM MAJOR_CUSTOMER WHERE BALANCE > CREDIT_LIMIT;
++--------------+---------------------+
+| CUSTOMER_NUM | CUSTOMER_NAME       |
++--------------+---------------------+
+| 408          | The Everything Shop |
+| 842          | All Season          |
++--------------+---------------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT CUSTOMER_NUM, CUSTOMER_NAME FROM CUSTOMER WHERE CREDIT_LIMIT > 10000 AND BALANCE > CREDIT_LIMIT;
+Empty set (0.10 sec)
+
+mysql> SELECT CUSTOMER_NUM, CUSTOMER_NAME FROM CUSTOMER WHERE CREDIT_LIMIT < 10000 AND BALANCE > CREDIT_LIMIT;
++--------------+---------------------+
+| CUSTOMER_NUM | CUSTOMER_NAME       |
++--------------+---------------------+
+| 408          | The Everything Shop |
+| 842          | All Season          |
++--------------+---------------------+
+2 rows in set (0.00 sec)
+
+mysql> CREATE VIEW PART_ORDER AS SELECT PART.PART_NUM, PART.DESCRIPTION, PART.PRICE, ORDER_LINE.ORDER_NUM, ORDERS.ORDER_DATE, ORDER_LINE.NUM_ORDERED, ORDER_LINE.QUOTED_PRICE FROM ORDER_LINE JOIN PART ON PART.PART_NUM = ORDER_LINE.PART_NUM JOIN ORDERS ON ORDERS.ORDER_NUM = ORDER_LINE.ORDER_NUM;
+Query OK, 0 rows affected (0.16 sec)
+
+mysql> SELECT * FROM PART_ORDER;
++----------+----------------+---------+-----------+------------+-------------+--------------+
+| PART_NUM | DESCRIPTION    | PRICE   | ORDER_NUM | ORDER_DATE | NUM_ORDERED | QUOTED_PRICE |
++----------+----------------+---------+-----------+------------+-------------+--------------+
+| AT94     | Iron           |   24.95 | 21608     | 2007-10-20 |          11 |        21.95 |
+| DR93     | Gas Range      |  495.00 | 21610     | 2007-10-20 |           1 |       495.00 |
+| DW11     | Washer         |  399.99 | 21610     | 2007-10-20 |           1 |       399.99 |
+| KL62     | Dryer          |  349.95 | 21613     | 2007-10-21 |           4 |       329.95 |
+| KT03     | Dishwasher     |  595.00 | 21614     | 2007-10-21 |           2 |       595.00 |
+| BV06     | Home Gym       |  794.95 | 21617     | 2007-10-23 |           2 |       794.95 |
+| CD52     | Microwave Oven |  165.00 | 21617     | 2007-10-23 |           4 |       150.00 |
+| DR93     | Gas Range      |  495.00 | 21619     | 2007-10-23 |           1 |       495.00 |
+| KV29     | Treadmill      | 1390.00 | 21623     | 2007-10-23 |           2 |      1290.00 |
++----------+----------------+---------+-----------+------------+-------------+--------------+
+9 rows in set (0.17 sec)
+
+mysql> SELECT PART_NUM, DESCRIPTION, ORDER_NUM, QUOTED_PRICE FROM PART_ORDER WHERE QUOTED_PRICE > 100;
++----------+----------------+-----------+--------------+
+| PART_NUM | DESCRIPTION    | ORDER_NUM | QUOTED_PRICE |
++----------+----------------+-----------+--------------+
+| DR93     | Gas Range      | 21610     |       495.00 |
+| DW11     | Washer         | 21610     |       399.99 |
+| KL62     | Dryer          | 21613     |       329.95 |
+| KT03     | Dishwasher     | 21614     |       595.00 |
+| BV06     | Home Gym       | 21617     |       794.95 |
+| CD52     | Microwave Oven | 21617     |       150.00 |
+| DR93     | Gas Range      | 21619     |       495.00 |
+| KV29     | Treadmill      | 21623     |      1290.00 |
++----------+----------------+-----------+--------------+
+8 rows in set (0.00 sec)
+
+mysql> SELECT PART.PART_NUM, PART.DESCRIPTION, ORDER_LINE.ORDER_NUM, ORDER_LINE.QUOTED_PRICE FROM ORDER_LINE 
+    -> JOIN PART ON PART.PART_NUM = ORDER_LINE.PART_NUM 
+    -> WHERE ORDER_LINE.QUOTED_PRICE > 100;
++----------+----------------+-----------+--------------+
+| PART_NUM | DESCRIPTION    | ORDER_NUM | QUOTED_PRICE |
++----------+----------------+-----------+--------------+
+| DR93     | Gas Range      | 21610     |       495.00 |
+| DW11     | Washer         | 21610     |       399.99 |
+| KL62     | Dryer          | 21613     |       329.95 |
+| KT03     | Dishwasher     | 21614     |       595.00 |
+| BV06     | Home Gym       | 21617     |       794.95 |
+| CD52     | Microwave Oven | 21617     |       150.00 |
+| DR93     | Gas Range      | 21619     |       495.00 |
+| KV29     | Treadmill      | 21623     |      1290.00 |
++----------+----------------+-----------+--------------+
+8 rows in set (0.00 sec)
+
+mysql> CREATE VIEW ORDER_TOTAL AS SELECT ORDER_LINE.ORDER_NUM, CONCAT(SUM(ORDER_LINE.NUM_ORDERED) * ORDER_LINE.QUOTED_PRICE) AS TOTAL_AMOUNT FROM ORDER_LINE ORDER BY ORDER_LINE.ORDER_NUM;
+Query OK, 0 rows affected (0.15 sec)
+
+mysql> SELECT * FROM ORDER_TOTAL;
++-----------+--------------+
+| ORDER_NUM | TOTAL_AMOUNT |
++-----------+--------------+
+| 21608     | 614.60       |
++-----------+--------------+
+1 row in set (0.11 sec)
+
+mysql> DROP VIEW ORDER_TOTAL;
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> CREATE VIEW ORDER_TOTAL AS SELECT ORDERS.ORDER_NUM, CONCAT(SUM(ORDER_LINE.NUM_ORDERED) * ORDER_LINE.QUOTED_PRICE) AS TOTAL_AMOUNT FROM ORDER_LINE JOIN ORDERS ON ORDERS.ORDER_NUM = ORDERLINE.ORDER_NUM ORDER BY ORDER_LINE.ORDER_NUM;
+ERROR 1054 (42S22): Unknown column 'ORDERLINE.ORDER_NUM' in 'on clause'
+mysql> CREATE VIEW ORDER_TOTAL AS SELECT ORDERS.ORDER_NUM, CONCAT(SUM(ORDER_LINE.NUM_ORDERED) * ORDER_LINE.QUOTED_PRICE) AS TOTAL_AMOUNT FROM ORDER_LINE JOIN ORDERS ON ORDERS.ORDER_NUM = ORDER_LINE.ORDER_NUM ORDER BY ORDER_LINE.ORDER_NUM;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> SELECT * FROM ORDER_TOTAL;
++-----------+--------------+
+| ORDER_NUM | TOTAL_AMOUNT |
++-----------+--------------+
+| 21608     | 614.60       |
++-----------+--------------+
+1 row in set (0.00 sec)
+
+mysql> DROP VIEW ORDER_TOTAL;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CREATE VIEW ORDER_TOTAL AS SELECT ORDER_NUM, (NUM_ORDERED * QUOTED_PRICE) AS TOTAL_AMOUNT FROM ORDER_LINE ORDER BY ORDER_NUM;
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> SELECT * FROM ORDER_TOTAL;
++-----------+--------------+
+| ORDER_NUM | TOTAL_AMOUNT |
++-----------+--------------+
+| 21608     |       241.45 |
+| 21610     |       495.00 |
+| 21610     |       399.99 |
+| 21613     |      1319.80 |
+| 21614     |      1190.00 |
+| 21617     |      1589.90 |
+| 21617     |       600.00 |
+| 21619     |       495.00 |
+| 21623     |      2580.00 |
++-----------+--------------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT * FROM ORDER_TOTAL;
++-----------+--------------+
+| ORDER_NUM | TOTAL_AMOUNT |
++-----------+--------------+
+| 21608     |       241.45 |
+| 21610     |       495.00 |
+| 21610     |       399.99 |
+| 21613     |      1319.80 |
+| 21614     |      1190.00 |
+| 21617     |      1589.90 |
+| 21617     |       600.00 |
+| 21619     |       495.00 |
+| 21623     |      2580.00 |
++-----------+--------------+
+9 rows in set (0.00 sec)
+
+mysql> DROP VIEW ORDER_TOTAL;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CREATE VIEW ORDER_TOTAL AS SELECT ORDERS.ORDER_NUM, CONCAT(ORDER_LINE.NUM_ORDERED * ORDER_LINE.QUOTED_PRICE) AS TOTAL_AMOUNT FROM ORDERS JOIN ORDER_LINE ON ORDERLINE.ORDER_NUM = ORDERS.ORDER_NUM ORDER BY ORDERS.ORDER_NUM;
+ERROR 1054 (42S22): Unknown column 'ORDERLINE.ORDER_NUM' in 'on clause'
+mysql> CREATE VIEW ORDER_TOTAL AS SELECT ORDERS.ORDER_NUM, CONCAT(ORDER_LINE.NUM_ORDERED * ORDER_LINE.QUOTED_PRICE) AS TOTAL_AMOUNT FROM ORDERS JOIN ORDER_LINE ON ORDER_LINE.ORDER_NUM = ORDERS.ORDER_NUM ORDER BY ORDERS.ORDER_NUM;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> SELECT * FROM ORDER_TOTAL;
++-----------+--------------+
+| ORDER_NUM | TOTAL_AMOUNT |
++-----------+--------------+
+| 21608     | 241.45       |
+| 21610     | 495.00       |
+| 21610     | 399.99       |
+| 21613     | 1319.80      |
+| 21614     | 1190.00      |
+| 21617     | 1589.90      |
+| 21617     | 600.00       |
+| 21619     | 495.00       |
+| 21623     | 2580.00      |
++-----------+--------------+
+9 rows in set (0.00 sec)
+
+mysql> DROP VIEW ORDER_TOTAL;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CREATE VIEW ORDER_TOTAL AS SELECT ORDER_NUM, SUM(NUM_ORDERED * QUOTED_PRICE) AS TOTAL_AMOUNT FROM ORDER_LINE GROUP BY ORDER_NUM ORDER BY ORDERS.ORDER_NUM;
+ERROR 1054 (42S22): Unknown column 'ORDERS.ORDER_NUM' in 'order clause'
+mysql> CREATE VIEW ORDER_TOTAL AS SELECT ORDER_NUM, SUM(NUM_ORDERED * QUOTED_PRICE) AS TOTAL_AMOUNT FROM ORDER_LINE GROUP BY ORDER_NUM ORDER BY ORDER_NUM;
+Query OK, 0 rows affected (0.12 sec)
+
+mysql> SELECT * FROM ORDER_TOTAL;
++-----------+--------------+
+| ORDER_NUM | TOTAL_AMOUNT |
++-----------+--------------+
+| 21608     |       241.45 |
+| 21610     |       894.99 |
+| 21613     |      1319.80 |
+| 21614     |      1190.00 |
+| 21617     |      2189.90 |
+| 21619     |       495.00 |
+| 21623     |      2580.00 |
++-----------+--------------+
+7 rows in set (0.02 sec)
+
+mysql> SELECT * FROM ORDER_TOTAL WHERE TOTAL_AMOUNT > 1000;
++-----------+--------------+
+| ORDER_NUM | TOTAL_AMOUNT |
++-----------+--------------+
+| 21613     |      1319.80 |
+| 21614     |      1190.00 |
+| 21617     |      2189.90 |
+| 21623     |      2580.00 |
++-----------+--------------+
+4 rows in set (0.10 sec)
+
+mysql> SELECT ORDER_NUM, SUM(NUM_ORDERED * QUOTED_PRICE) AS TOTAL_AMOUNT FROM ORDER_LINE GROUP BY ORDER_NUM HAVING SUM(NUM_ORDERED * QUOTED_PRICE) > 1000 ORDER BY ORDERS.ORDER_NUM;
+ERROR 1054 (42S22): Unknown column 'ORDERS.ORDER_NUM' in 'order clause'
+mysql> SELECT ORDER_NUM, SUM(NUM_ORDERED * QUOTED_PRICE) AS TOTAL_AMOUNT FROM ORDER_LINE GROUP BY ORDER_NUM HAVING SUM(NUM_ORDERED * QUOTED_PRICE) > 1000 ORDER BY ORDER_NUM;
++-----------+--------------+
+| ORDER_NUM | TOTAL_AMOUNT |
++-----------+--------------+
+| 21613     |      1319.80 |
+| 21614     |      1190.00 |
+| 21617     |      2189.90 |
+| 21623     |      2580.00 |
++-----------+--------------+
+4 rows in set (0.00 sec)
+
+mysql> EXIT;
+mysql> GRANT SELECT ON PART TO 'ASHTON';
+ERROR 1046 (3D000): No database selected
+mysql> USE PREMIERE
+Database changed
+mysql> GRANT SELECT ON PART TO 'ASHTON';
+ERROR 1133 (42000): Can't find any matching row in the user table
+mysql> GRANT SELECT ON PREMIERE.PART TO 'ASHTON';
+ERROR 1133 (42000): Can't find any matching row in the user table
+mysql> GRANT INSERT ON ORDER_LINE TO KELLY, MORGAN;
+ERROR 1133 (42000): Can't find any matching row in the user table
+mysql> SELECT * FROM USER;
+ERROR 1146 (42S02): Table 'premiere.user' doesn't exist
+
+mysql> 
+mysql> exit
+mysql> use premiere;
+Database changed
+mysql> show databases;
++------------------------+
+| Database               |
++------------------------+
+| information_schema     |
+| alexamara_marina_group |
+| generic_company        |
+| henry_books            |
+| music                  |
+| mysql                  |
+| performance_schema     |
+| premiere               |
+| sys                    |
++------------------------+
+9 rows in set (0.00 sec)
+
+mysql> exit;
+mysql> use premiere;
+Database changed
+mysql> GRANT SELECT ON PART TO 'Ashton';
+Query OK, 0 rows affected (0.00 sec)
+mysql> exit;
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| premiere           |
++--------------------+
+2 rows in set (0.00 sec)
+
+mysql> use premiere;
+Database changed
+mysql> select * from part;
++----------+----------------+---------+-------+-----------+---------+
+| PART_NUM | DESCRIPTION    | ON_HAND | CLASS | WAREHOUSE | PRICE   |
++----------+----------------+---------+-------+-----------+---------+
+| AT94     | Iron           |      50 | HW    | 3         |   24.95 |
+| BV06     | Home Gym       |      45 | SG    | 2         |  794.95 |
+| CD52     | Microwave Oven |      32 | AP    | 1         |  165.00 |
+| DL71     | Cordless Drill |      21 | HW    | 3         |  129.95 |
+| DR93     | Gas Range      |       8 | AP    | 2         |  495.00 |
+| DW11     | Washer         |      12 | AP    | 3         |  399.99 |
+| FD21     | Stand Mixer    |      22 | HW    | 3         |  159.95 |
+| KL62     | Dryer          |      12 | AP    | 1         |  349.95 |
+| KT03     | Dishwasher     |       8 | AP    | 3         |  595.00 |
+| KV29     | Treadmill      |       9 | SG    | 2         | 1390.00 |
++----------+----------------+---------+-------+-----------+---------+
+10 rows in set (0.11 sec)
+
+mysql> update part set  description = 'Irons' where part_num = 'AT94';
+ERROR 1142 (42000): UPDATE command denied to user 'Ashton'@'localhost' for table 'part'
+mysql> EXIT;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> GRANT INSERT ON ORDER_LINE TO 'Kelly', 'Morgan';
+Query OK, 0 rows affected (0.00 sec)
+mysql> EXIT;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> insert into ORDER_LINE (ORDER_num, PART_NUM) value(99999, 'ZZ99');
+Query OK, 0 rows affected (0.00 sec)
+mysql> EXIT;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> GRANT UPDATE ON PART TO 'James';
+Query OK, 0 rows affected (0.00 sec)
+mysql> EXIT;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> update part set  description = 'Irons' where part_num = 'AT94';
+Query OK, 1 rows affected (0.02 sec)
+mysql> EXIT;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> GRANT DELETE ON CUSTOMER TO 'Danielson';
+Query OK, 0 rows affected (0.00 sec)
+mysql> EXIT;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> DELETE FROM CUSTOMER WHERE CUSTOMER_NUM = 148;
+Query OK, 1 rows affected (0.02 sec)
+mysql> EXIT;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> GRANT SELECT(CUSTOMER_NUM, NAME, STREET, CITY, STATE, ZIP) ON CUSTOMER TO PUBLIC;
+ERROR 1054 (42S22): Unknown column 'NAME' in 'CUSTOMER'
+mysql> GRANT SELECT(CUSTOMER_NUM, CUSTOMER_NAME, STREET, CITY, STATE, ZIP) ON CUSTOMER TO PUBLIC;
+ERROR 1133 (42000): Can't find any matching row in the user table
+mysql> GRANT SELECT(CUSTOMER_NUM, CUSTOMER_NAME, STREET, CITY, STATE, ZIP) ON CUSTOMER TO ALL;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ALL' at line 1
+
+mysql> SHOW COLUMNS FROM CUSTOMER;
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| CUSTOMER_NUM  | char(3)      | NO   | PRI | NULL    |       |
+| CUSTOMER_NAME | char(35)     | NO   |     | NULL    |       |
+| STREET        | char(15)     | YES  |     | NULL    |       |
+| CITY          | char(15)     | YES  |     | NULL    |       |
+| STATE         | char(2)      | YES  |     | NULL    |       |
+| ZIP           | char(5)      | YES  |     | NULL    |       |
+| BALANCE       | decimal(8,2) | YES  |     | NULL    |       |
+| CREDIT_LIMIT  | decimal(8,2) | YES  |     | NULL    |       |
+| REP_NUM       | char(2)      | YES  |     | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
+9 rows in set (0.00 sec)
+
+mysql> GRANT SELECT ON CUSTOMER TO public;
+ERROR 1133 (42000): Can't find any matching row in the user table
+mysql> GRANT SELECT (CUSTOMER_NUM, CUSTOMER_NAME, STREET, CITY, STATE, ZIP) ON CUSTOMER TO PUBLIC;
+ERROR 1133 (42000): Can't find any matching row in the user table
+mysql> EXIT;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> GRANT SELECT(CUSTOMER_NUM, CUSTOMER_NAME, STREET, CITY, STATE, ZIP) ON CUSTOMER TO 'Ashton', 'Kelly', 'Morgan', 'James', 'Danielson', 'Perez', 'Washington', 'Grinstead';
+Query OK, 0 rows affected (0.00 sec)
+mysql> EXIT;
+
+mysql> use premiere;
+Database changed
+mysql> select * from part;
++----------+----------------+---------+-------+-----------+---------+
+| PART_NUM | DESCRIPTION    | ON_HAND | CLASS | WAREHOUSE | PRICE   |
++----------+----------------+---------+-------+-----------+---------+
+| AT94     | Iron           |      50 | HW    | 3         |   24.95 |
+| BV06     | Home Gym       |      45 | SG    | 2         |  794.95 |
+| CD52     | Microwave Oven |      32 | AP    | 1         |  165.00 |
+| DL71     | Cordless Drill |      21 | HW    | 3         |  129.95 |
+| DR93     | Gas Range      |       8 | AP    | 2         |  495.00 |
+| DW11     | Washer         |      12 | AP    | 3         |  399.99 |
+| FD21     | Stand Mixer    |      22 | HW    | 3         |  159.95 |
+| KL62     | Dryer          |      12 | AP    | 1         |  349.95 |
+| KT03     | Dishwasher     |       8 | AP    | 3         |  595.00 |
+| KV29     | Treadmill      |       9 | SG    | 2         | 1390.00 |
++----------+----------------+---------+-------+-----------+---------+
+10 rows in set (0.11 sec)
+mysql> exit;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> GRANT INDEX ON ORDERS TO 'Perez';
+Query OK, 0 rows affected (0.00 sec)
+mysql> EXIT;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> CREATE INDEX CUS_NUM ON ORDERS (CUSTOMER_NUM);
+Query OK, 7 rows affected (0.64 sec)
+mysql> EXIT;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> GRANT ALTER ON PART TO 'Washington';
+Query OK, 0 rows affected (0.00 sec)
+mysql> EXIT;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> ALTER TABLE PART ADD NEW_TYPE CHAR(4);
+Query OK, 10 rows affected (0.87 sec)
+mysql> EXIT;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> GRANT ALL ON ORDERS TO 'Grinstead';
+Query OK, 0 rows affected (0.00 sec)
+mysql> EXIT;
+
+mysql> USE PREMIERE;
+Database changed
+mysql> ALTER TABLE ORDERS ADD NEW_TYPE CHAR(4);
+Query OK, 7 rows affected (0.56 sec)
+mysql> EXIT;
+
+mysql> REVOKE ALL FROM 'Ashton';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM 'Ashton'' at line 1
+mysql> REVOKE SELECT FROM 'Ashton';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM 'Ashton'' at line 1
+mysql> EXIT;
+mysql> REVOKE SELECT FROM 'Ashton';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM 'Ashton'' at line 1
+mysql> REVOKE SELECT ON PART FROM 'Ashton';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CREATE INDEX PART_INDEX1 ON ORDER_LINE(PART_NUM);
+Query OK, 0 rows affected (0.23 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> CREATE INDEX PART_INDEX2 ON PART(CLASS);
+Query OK, 0 rows affected (0.34 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> CREATE INDEX PART_INDEX3 ON PART(CLASS,WAREHOUSE);
+Query OK, 0 rows affected (0.37 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> CREATE INDEX PART_INDEX4 ON PART(CLASS DESC,WAREHOUSE DESC);
+Query OK, 0 rows affected, 1 warning (0.35 sec)
+Records: 0  Duplicates: 0  Warnings: 1
+
+mysql> DROP PART_INDEX3 ON PART;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'PART_INDEX3 ON PART' at line 1
+mysql> ALTER TABLE PART DROP INDEX PART_INDEX3;
+Query OK, 0 rows affected (0.13 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SHOW TABLES;
++--------------------+
+| Tables_in_premiere |
++--------------------+
+| customer           |
+| major_customer     |
+| order_line         |
+| order_total        |
+| orders             |
+| part               |
+| part_order         |
+| rep                |
++--------------------+
+8 rows in set (0.00 sec)
+
+mysql> SHOW COLUMNS FROM PART;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| PART_NUM    | char(4)      | NO   | PRI | NULL    |       |
+| DESCRIPTION | char(15)     | YES  |     | NULL    |       |
+| ON_HAND     | decimal(4,0) | YES  |     | NULL    |       |
+| CLASS       | char(2)      | YES  | MUL | NULL    |       |
+| WAREHOUSE   | char(1)      | YES  |     | NULL    |       |
+| PRICE       | decimal(6,2) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> SHOW INDEX FROM PART;
++-------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table | Non_unique | Key_name    | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++-------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| part  |          0 | PRIMARY     |            1 | PART_NUM    | A         |          10 |     NULL | NULL   |      | BTREE      |         |               |
+| part  |          1 | PART_INDEX2 |            1 | CLASS       | A         |           3 |     NULL | NULL   | YES  | BTREE      |         |               |
+| part  |          1 | PART_INDEX4 |            1 | CLASS       | A         |           3 |     NULL | NULL   | YES  | BTREE      |         |               |
+| part  |          1 | PART_INDEX4 |            2 | WAREHOUSE   | A         |           5 |     NULL | NULL   | YES  | BTREE      |         |               |
++-------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+4 rows in set (0.00 sec)
+
+mysql> SHOW GRANTS FOR 'Ashton';
++---------------------------------------------------------------------------------------------------------------+
+| Grants for Ashton@%                                                                                           |
++---------------------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO 'Ashton'@'%'                                                                            |
+| GRANT SELECT (STREET, CUSTOMER_NAME, ZIP, CUSTOMER_NUM, STATE, CITY) ON `premiere`.`customer` TO 'Ashton'@'%' |
++---------------------------------------------------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+
+mysql> ALTER TABLE ORDER_LINE ADD FOREIGN KEY(ORDER_NUM) REFERENCES ORDERS(ORDER_NUM);
+Query OK, 9 rows affected (0.95 sec)
+Records: 9  Duplicates: 0  Warnings: 0
+mysql> EXIT;

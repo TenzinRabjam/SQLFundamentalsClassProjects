@@ -1,0 +1,405 @@
+mysql> show databases;
++------------------------+
+| Database               |
++------------------------+
+| information_schema     |
+| alexamara_marina_group |
+| henry_books            |
+| music                  |
+| mysql                  |
+| performance_schema     |
+| premiere               |
+| sys                    |
++------------------------+
+8 rows in set (0.00 sec)
+
+mysql> use henry_books;
+Database changed
+mysql> select count(publisher_code) from book publisher_code; 
++-----------------------+
+| count(publisher_code) |
++-----------------------+
+|                    30 |
++-----------------------+
+1 row in set (0.00 sec)
+
+mysql> select count(publisher_code) from book group by publisher_code; 
++-----------------------+
+| count(publisher_code) |
++-----------------------+
+|                     1 |
+|                     1 |
+|                     1 |
+|                     1 |
+|                     1 |
+|                     1 |
+|                     3 |
+|                     3 |
+|                     4 |
+|                     2 |
+|                     1 |
+|                     2 |
+|                     1 |
+|                     2 |
+|                     1 |
+|                     1 |
+|                     1 |
+|                     2 |
+|                     1 |
++-----------------------+
+19 rows in set (0.00 sec)
+
+mysql> select publisher_code, count(publisher_code) from book group by publisher_code; 
++----------------+-----------------------+
+| publisher_code | count(publisher_code) |
++----------------+-----------------------+
+| BA             |                     1 |
+| BP             |                     1 |
+| BY             |                     1 |
+| FA             |                     1 |
+| FS             |                     1 |
+| HC             |                     1 |
+| JP             |                     3 |
+| LB             |                     3 |
+| PE             |                     4 |
+| PL             |                     2 |
+| RH             |                     1 |
+| SC             |                     2 |
+| SS             |                     1 |
+| ST             |                     2 |
+| TA             |                     1 |
+| TB             |                     1 |
+| TO             |                     1 |
+| VB             |                     2 |
+| WP             |                     1 |
++----------------+-----------------------+
+19 rows in set (0.00 sec)
+
+mysql> select publisher_code, count(publisher_code) from book group by publisher_code where count(publisher_code) > 1; 
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where count(publisher_code) > 1' at line 1
+mysql> select publisher_code, count(publisher_code) as count from book group by publisher_code where count > 1; 
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where count > 1' at line 1
+mysql> select publisher_code, count(publisher_code) as count from book where count > 1 group by publisher_code; 
+ERROR 1054 (42S22): Unknown column 'count' in 'where clause'
+mysql> select publisher_code, count(publisher_code) as count from book where count(publisher_code) > 1 group by publisher_code; 
+ERROR 1111 (HY000): Invalid use of group function
+mysql> select publisher_code, count(publisher_code) as count from book group by publisher_code; 
++----------------+-------+
+| publisher_code | count |
++----------------+-------+
+| BA             |     1 |
+| BP             |     1 |
+| BY             |     1 |
+| FA             |     1 |
+| FS             |     1 |
+| HC             |     1 |
+| JP             |     3 |
+| LB             |     3 |
+| PE             |     4 |
+| PL             |     2 |
+| RH             |     1 |
+| SC             |     2 |
+| SS             |     1 |
+| ST             |     2 |
+| TA             |     1 |
+| TB             |     1 |
+| TO             |     1 |
+| VB             |     2 |
+| WP             |     1 |
++----------------+-------+
+19 rows in set (0.00 sec)
+
+mysql> select publisher_code, count(publisher_code) as count from book where count > 1 group by publisher_code; 
+ERROR 1054 (42S22): Unknown column 'count' in 'where clause'
+mysql> select publisher_code, count(publisher_code) as count from book having count(publisher_code) > 1 group by publisher_code; 
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'group by publisher_code' at line 1
+mysql> select publisher_code, count(publisher_code) as count from book group by publisher_code having count(publisher_code) > 1; 
++----------------+-------+
+| publisher_code | count |
++----------------+-------+
+| JP             |     3 |
+| LB             |     3 |
+| PE             |     4 |
+| PL             |     2 |
+| SC             |     2 |
+| ST             |     2 |
+| VB             |     2 |
++----------------+-------+
+7 rows in set (0.00 sec)
+
+mysql> select avg(paperback = 'yes'), avg(paperback = 'no') from book group by paperback;
++------------------------+-----------------------+
+| avg(paperback = 'yes') | avg(paperback = 'no') |
++------------------------+-----------------------+
+|                 0.0000 |                1.0000 |
+|                 1.0000 |                0.0000 |
++------------------------+-----------------------+
+2 rows in set (0.00 sec)
+
+mysql> select avg(paperback), avg(paperback) from book group by paperback;
++----------------+----------------+
+| avg(paperback) | avg(paperback) |
++----------------+----------------+
+|              0 |              0 |
+|              0 |              0 |
++----------------+----------------+
+2 rows in set, 42 warnings (0.11 sec)
+
+mysql> select avg(cost), avg(cost) from book group by paperback;
+ERROR 1054 (42S22): Unknown column 'cost' in 'field list'
+mysql> select avg(price), avg(price) from book group by paperback;
++------------+------------+
+| avg(price) | avg(price) |
++------------+------------+
+|  19.165556 |  19.165556 |
+|   9.256190 |   9.256190 |
++------------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select avg(price), avg(price) from book group by paperback having paperback = 'yes';
++------------+------------+
+| avg(price) | avg(price) |
++------------+------------+
+|   9.256190 |   9.256190 |
++------------+------------+
+1 row in set (0.11 sec)
+
+mysql> select avg(price), avg(price) from book group by paperback having paperback = 'yes' having paperback = 'no';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'having paperback = 'no'' at line 1
+mysql> select avg(price), avg(price) from book group by paperback having paperback = 'yes';
++------------+------------+
+| avg(price) | avg(price) |
++------------+------------+
+|   9.256190 |   9.256190 |
++------------+------------+
+1 row in set (0.00 sec)
+
+mysql> select avg(price), avg(price) from book group by paperback having paperback = 'yes' or paperback = 'no';
++------------+------------+
+| avg(price) | avg(price) |
++------------+------------+
+|  19.165556 |  19.165556 |
+|   9.256190 |   9.256190 |
++------------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select avg(price), avg(price) from book group by paperback having paperback = 'yes' , paperback = 'no';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' paperback = 'no'' at line 1
+mysql> select avg(price), avg(price) from book group by paperback having paperback = 'yes' and  paperback = 'no';
+Empty set (0.00 sec)
+
+mysql> select avg(price), avg(price) from book where paperback = 'yes' where paperback = 'no' group by paperback ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where paperback = 'no' group by paperback' at line 1
+mysql> select avg(price), avg(price) from book where paperback = 'yes' group by paperback having paperback = 'no';
+Empty set (0.00 sec)
+
+mysql> select avg(price), avg(price) from book where paperback = 'yes' group by paperback having paperback = 'yes';
++------------+------------+
+| avg(price) | avg(price) |
++------------+------------+
+|   9.256190 |   9.256190 |
++------------+------------+
+1 row in set (0.00 sec)
+
+mysql> exit
+mysql> show databases;
++------------------------+
+| Database               |
++------------------------+
+| information_schema     |
+| alexamara_marina_group |
+| henry_books            |
+| music                  |
+| mysql                  |
+| performance_schema     |
+| premiere               |
+| sys                    |
++------------------------+
+8 rows in set (0.00 sec)
+
+mysql> use henry_books;
+Database changed
+mysql> select avg(price), avg(price = 'no') from book group by paperback having paperback = 'yes' or paperback = 'no';
++------------+-------------------+
+| avg(price) | avg(price = 'no') |
++------------+-------------------+
+|  19.165556 |            0.0000 |
+|   9.256190 |            0.0000 |
++------------+-------------------+
+2 rows in set, 1 warning (0.13 sec)
+
+mysql> select avg(price), avg(price = 'no') from book group by paperback having paperback = 'yes';
++------------+-------------------+
+| avg(price) | avg(price = 'no') |
++------------+-------------------+
+|   9.256190 |            0.0000 |
++------------+-------------------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> select avg(price),!avg(price) from book group by paperback having paperback = 'yes' or paperback = 'no';
++------------+-------------+
+| avg(price) | !avg(price) |
++------------+-------------+
+|  19.165556 |           0 |
+|   9.256190 |           0 |
++------------+-------------+
+2 rows in set (0.12 sec)
+
+mysql> select avg(price),avg(price) from book group by paperback having paperback = 'yes' or paperback = 'no';
++------------+------------+
+| avg(price) | avg(price) |
++------------+------------+
+|  19.165556 |  19.165556 |
+|   9.256190 |   9.256190 |
++------------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select avg(price) as Paperback,avg(price)as non paperback from book group by paperback having paperback = 'yes' or paperback = 'no';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'paperback from book group by paperback having paperback = 'yes' or paperback = '' at line 1
+mysql> select avg(price),avg(price) from book group by paperback having paperback = 'yes' or paperback = 'no';
++------------+------------+
+| avg(price) | avg(price) |
++------------+------------+
+|  19.165556 |  19.165556 |
+|   9.256190 |   9.256190 |
++------------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select avg(price),(sum(price) - avg(price)) from book group by paperback having paperback = 'yes' or paperback = 'no';
++------------+---------------------------+
+| avg(price) | (sum(price) - avg(price)) |
++------------+---------------------------+
+|  19.165556 |                153.324444 |
+|   9.256190 |                185.123810 |
++------------+---------------------------+
+2 rows in set (0.12 sec)
+
+mysql> select avg(price),(sum(price) - (avg(price) * count(price)) from book group by paperback having paperback = 'yes' or paperback = 'no';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'from book group by paperback having paperback = 'yes' or paperback = 'no'' at line 1
+mysql> select avg(price),(sum(price) - avg(price)) from book group by paperback having paperback = 'yes' or paperback = 'no';
++------------+---------------------------+
+| avg(price) | (sum(price) - avg(price)) |
++------------+---------------------------+
+|  19.165556 |                153.324444 |
+|   9.256190 |                185.123810 |
++------------+---------------------------+
+2 rows in set (0.00 sec)
+
+mysql> TEE C:/Users/trabjam/Desktop/m4a2-example.txt;
+mysql> select paperback, avg(price) from book group by paperback;
+ERROR 1046 (3D000): No database selected
+mysql> use henry
+ERROR 1049 (42000): Unknown database 'henry'
+mysql> use henry_books;
+Database changed
+mysql> select paperback, avg(price) from book group by paperback;
++-----------+------------+
+| paperback | avg(price) |
++-----------+------------+
+| No        |  19.165556 |
+| YES       |   9.256190 |
++-----------+------------+
+2 rows in set (0.01 sec)
+
+mysql> use alexamara_marina_group;
+Database changed
+mysql> select count(boat_name) from marina_slip having marina_num;
+ERROR 1054 (42S22): Unknown column 'marina_num' in 'having clause'
+mysql> select marina_num, count(boat_name) from marina_slip group by marina_num;
++------------+------------------+
+| marina_num | count(boat_name) |
++------------+------------------+
+|          1 |                5 |
+|          2 |                6 |
++------------+------------------+
+2 rows in set (0.00 sec)
+
+mysql> select marina_num, sum(rental_fee) from marina_slip group by marina_num;
++------------+-----------------+
+| marina_num | sum(rental_fee) |
++------------+-----------------+
+|          1 |        16200.00 |
+|          2 |        16500.00 |
++------------+-----------------+
+2 rows in set (0.00 sec)
+
+mysql> select marina_num, min(rental_fee), max(rental_fee) from marina_slip group by marina_num;
++------------+-----------------+-----------------+
+| marina_num | min(rental_fee) | max(rental_fee) |
++------------+-----------------+-----------------+
+|          1 |         2400.00 |         3800.00 |
+|          2 |         1800.00 |         4200.00 |
++------------+-----------------+-----------------+
+2 rows in set (0.00 sec)
+
+mysql> use premiere;
+Database changed
+mysql> select sum(commission) from rep;
++-----------------+
+| sum(commission) |
++-----------------+
+|        83245.50 |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> select sum(commission) as Total Commission from rep;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Commission from rep' at line 1
+mysql> select sum(commission) as Total_Commission from rep;
++------------------+
+| Total_Commission |
++------------------+
+|         83245.50 |
++------------------+
+1 row in set (0.00 sec)
+
+mysql> select rep_num, count(customer_num) from customer group by rep_num;
++---------+---------------------+
+| rep_num | count(customer_num) |
++---------+---------------------+
+|      20 |                   3 |
+|      35 |                   4 |
+|      65 |                   3 |
++---------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql> select class, count(part_num) from part group by class;
++-------+-----------------+
+| class | count(part_num) |
++-------+-----------------+
+| AP    |               5 |
+| HW    |               3 |
+| SG    |               2 |
++-------+-----------------+
+3 rows in set (0.00 sec)
+
+mysql> select rep_num, count(customer_num) AS NUMBER_OF_CUSTOMERS from customer group by rep_num;
++---------+---------------------+
+| rep_num | NUMBER_OF_CUSTOMERS |
++---------+---------------------+
+|      20 |                   3 |
+|      35 |                   4 |
+|      65 |                   3 |
++---------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql> select class, count(part_num) NUMBER_OF_PARTS from part group by class;
++-------+-----------------+
+| class | NUMBER_OF_PARTS |
++-------+-----------------+
+| AP    |               5 |
+| HW    |               3 |
+| SG    |               2 |
++-------+-----------------+
+3 rows in set (0.00 sec)
+
+mysql> select class, count(part_num) NUMBER_OF_PARTS_ON_HAND from part group by class;
++-------+-------------------------+
+| class | NUMBER_OF_PARTS_ON_HAND |
++-------+-------------------------+
+| AP    |                       5 |
+| HW    |                       3 |
+| SG    |                       2 |
++-------+-------------------------+
+3 rows in set (0.00 sec)
+
+mysql> EXIT;

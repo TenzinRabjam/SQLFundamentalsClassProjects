@@ -1,0 +1,417 @@
+
+mysql> DROP USER IF   EXISTS 'Rodriquez', 'Gomez', 'Liston', 'Andrews', 'Zimmer', 'Golden';CREATE USER 'Rodriquez' IDENTIFIED BY 'PASSWORD';CREATE USER 'Gomez' IDENTIFIED BY   'PASSWORD';CREATE USER 'Liston' IDENTIFIED BY 'PASSWORD';CREATE USER 'Andrews' IDENTIFIED BY   'PASSWORD';CREATE USER 'Zimmer' IDENTIFIED BY 'PASSWORD';CREATE USER 'Golden' IDENTIFIED BY 'PASSWORD';USE MYSQL;SELECT USER FROM USER;USE HENRY_BOOKS;
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Database changed
++------------+
+| USER       |
++------------+
+| Andrews    |
+| Ashton     |
+| Danielson  |
+| Golden     |
+| Gomez      |
+| Grinstead  |
+| James      |
+| Kelly      |
+| Liston     |
+| Morgan     |
+| Perez      |
+| Rodriquez  |
+| Washington |
+| Zimmer     |
+| mysql.sys  |
+| root       |
++------------+
+16 rows in set (0.00 sec)
+
+Database changed
+
+mysql> CREATE VIEW SCRIBNR AS SELECT BOOK_CODE, TITLE, TYPE, PRICE FROM BOOK WHERE PUBLISHER_CODE = 'SC';
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> SELECT * FROM SCRIBNER;
+ERROR 1146 (42S02): Table 'henry_books.scribner' doesn't exist
+mysql> SELECT * FROM SCRIBNR;
++-----------+-----------------------+------+-------+
+| BOOK_CODE | TITLE                 | TYPE | PRICE |
++-----------+-----------------------+------+-------+
+| 1351      | Dreamcatcher: A Novel | HOR  | 19.60 |
+| 5790      | Catch-22              | FIC  | 12.00 |
++-----------+-----------------------+------+-------+
+2 rows in set (0.11 sec)
+
+mysql> DROP VIEW SCRIBNR;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CREATE VIEW SCRIBNER AS SELECT BOOK_CODE, TITLE, TYPE, PRICE FROM BOOK WHERE PUBLISHER_CODE = 'SC';
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> SELECT * FROM SCRIBNER;
++-----------+-----------------------+------+-------+
+| BOOK_CODE | TITLE                 | TYPE | PRICE |
++-----------+-----------------------+------+-------+
+| 1351      | Dreamcatcher: A Novel | HOR  | 19.60 |
+| 5790      | Catch-22              | FIC  | 12.00 |
++-----------+-----------------------+------+-------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT BOOK_CODE, TITLE, PRICE FROM SCRIBNER WHERE PRICE < 15;
++-----------+----------+-------+
+| BOOK_CODE | TITLE    | PRICE |
++-----------+----------+-------+
+| 5790      | Catch-22 | 12.00 |
++-----------+----------+-------+
+1 row in set (0.00 sec)
+
+mysql> SELECT BOOK_CODE, TITLE, PRICE FROM BOOK WHERE PRICE < 15 & WHERE PUBLISHER_CODE = 'SC';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE PUBLISHER_CODE = 'SC'' at line 1
+mysql> SELECT BOOK_CODE, TITLE, PRICE FROM BOOK WHERE PRICE < 15 & PUBLISHER_CODE = 'SC';
++-----------+------------------------------------------+-------+
+| BOOK_CODE | TITLE                                    | PRICE |
++-----------+------------------------------------------+-------+
+| 0180      | A Deepness in the Sky                    |  7.19 |
+| 0189      | Magic Terror                             |  7.99 |
+| 0200      | The Stranger                             |  8.00 |
+| 0378      | Venice                                   | 24.50 |
+| 079X      | Second Wind                              | 24.95 |
+| 0808      | The Edge                                 |  6.99 |
+| 1351      | Dreamcatcher: A Novel                    | 19.60 |
+| 1382      | Treasure Chests                          | 24.46 |
+| 138X      | Beloved                                  | 12.95 |
+| 2226      | Harry Potter and the Prisoner of Azkaban | 13.96 |
+| 2281      | Van Gogh and Gauguin                     | 21.00 |
+| 2766      | Of Mice and Men                          |  6.95 |
+| 2908      | Electric Light                           | 14.00 |
+| 3350      | Group: Six People in Search of a Life    | 10.40 |
+| 3743      | Nine Stories                             |  5.99 |
+| 3906      | The Soul of a New Machine                | 11.16 |
+| 5163      | Travels with Charley                     |  7.95 |
+| 5790      | Catch-22                                 | 12.00 |
+| 6128      | Jazz                                     | 12.95 |
+| 6328      | Band of Brothers                         |  9.60 |
+| 669X      | A Guide to SQL                           | 37.95 |
+| 6908      | Franny and Zooey                         |  5.99 |
+| 7405      | East of Eden                             | 12.95 |
+| 7443      | Harry Potter and the Goblet of Fire      | 18.16 |
+| 7559      | The Fall                                 |  8.00 |
+| 8092      | Godel, Escher, Bach                      | 14.00 |
+| 8720      | When Rabbit Howls                        |  6.29 |
+| 9611      | Black House                              | 18.81 |
+| 9627      | Song of Solomon                          | 14.00 |
+| 9701      | The Grapes of Wrath                      | 13.00 |
+| 9882      | Slay Ride                                |  6.99 |
+| 9883      | The Catcher in the Rye                   |  5.99 |
+| 9931      | To Kill a Mockingbird                    | 18.00 |
++-----------+------------------------------------------+-------+
+33 rows in set, 34 warnings (0.00 sec)
+
+mysql> SELECT BOOK_CODE, TITLE, PRICE FROM BOOK WHERE PRICE < 15;
++-----------+------------------------------------------+-------+
+| BOOK_CODE | TITLE                                    | PRICE |
++-----------+------------------------------------------+-------+
+| 0180      | A Deepness in the Sky                    |  7.19 |
+| 0189      | Magic Terror                             |  7.99 |
+| 0200      | The Stranger                             |  8.00 |
+| 0808      | The Edge                                 |  6.99 |
+| 138X      | Beloved                                  | 12.95 |
+| 2226      | Harry Potter and the Prisoner of Azkaban | 13.96 |
+| 2766      | Of Mice and Men                          |  6.95 |
+| 2908      | Electric Light                           | 14.00 |
+| 3350      | Group: Six People in Search of a Life    | 10.40 |
+| 3743      | Nine Stories                             |  5.99 |
+| 3906      | The Soul of a New Machine                | 11.16 |
+| 5163      | Travels with Charley                     |  7.95 |
+| 5790      | Catch-22                                 | 12.00 |
+| 6128      | Jazz                                     | 12.95 |
+| 6328      | Band of Brothers                         |  9.60 |
+| 6908      | Franny and Zooey                         |  5.99 |
+| 7405      | East of Eden                             | 12.95 |
+| 7559      | The Fall                                 |  8.00 |
+| 8092      | Godel, Escher, Bach                      | 14.00 |
+| 8720      | When Rabbit Howls                        |  6.29 |
+| 9627      | Song of Solomon                          | 14.00 |
+| 9701      | The Grapes of Wrath                      | 13.00 |
+| 9882      | Slay Ride                                |  6.99 |
+| 9883      | The Catcher in the Rye                   |  5.99 |
++-----------+------------------------------------------+-------+
+24 rows in set (0.00 sec)
+
+mysql> SELECT BOOK_CODE, TITLE, PRICE FROM BOOK WHERE PUBLISHER_CODE = 'SC' AND PRICE < 15;
++-----------+----------+-------+
+| BOOK_CODE | TITLE    | PRICE |
++-----------+----------+-------+
+| 5790      | Catch-22 | 12.00 |
++-----------+----------+-------+
+1 row in set (0.00 sec)
+
+mysql> CREATE VIEW NONPAPERBACK AS SELECT BOOK_CODE, TITLE, PUBLISHER_NAME, PRICE FROM BOOK JOIN PUBLISHER ON BOOK.PUBLISHER_CODE = PUBLISHER.PUBLISHER_CODE AND PAPERBACK = 'N';
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> SELECT * FROM NONPAPERBACK;
++-----------+------------------------------------------+--------------------------+-------+
+| BOOK_CODE | TITLE                                    | PUBLISHER_NAME           | PRICE |
++-----------+------------------------------------------+--------------------------+-------+
+| 0378      | Venice                                   | Simon and Schuster       | 24.50 |
+| 079X      | Second Wind                              | Putnam Publishing Group  | 24.95 |
+| 1351      | Dreamcatcher: A Novel                    | Scribner                 | 19.60 |
+| 1382      | Treasure Chests                          | Taunton Press            | 24.46 |
+| 2226      | Harry Potter and the Prisoner of Azkaban | Scholastic Trade         | 13.96 |
+| 2281      | Van Gogh and Gauguin                     | Westview Press           | 21.00 |
+| 2908      | Electric Light                           | Farrar Straus and Giroux | 14.00 |
+| 7443      | Harry Potter and the Goblet of Fire      | Scholastic Trade         | 18.16 |
+| 9611      | Black House                              | Random House             | 18.81 |
+| 9931      | To Kill a Mockingbird                    | HarperCollins Publishers | 18.00 |
++-----------+------------------------------------------+--------------------------+-------+
+10 rows in set (0.15 sec)
+
+mysql> SELECT * FROM NONPAPERBACK WHERE PRICE < 20;
++-----------+------------------------------------------+--------------------------+-------+
+| BOOK_CODE | TITLE                                    | PUBLISHER_NAME           | PRICE |
++-----------+------------------------------------------+--------------------------+-------+
+| 1351      | Dreamcatcher: A Novel                    | Scribner                 | 19.60 |
+| 2226      | Harry Potter and the Prisoner of Azkaban | Scholastic Trade         | 13.96 |
+| 2908      | Electric Light                           | Farrar Straus and Giroux | 14.00 |
+| 7443      | Harry Potter and the Goblet of Fire      | Scholastic Trade         | 18.16 |
+| 9611      | Black House                              | Random House             | 18.81 |
+| 9931      | To Kill a Mockingbird                    | HarperCollins Publishers | 18.00 |
++-----------+------------------------------------------+--------------------------+-------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT BOOK_CODE, TITLE, PUBLISHER_NAME, PRICE FROM PUBLISHER JOIN BOOK ON BOOK.PUBLISHER_CODE - PUBLISHER.PUBLISHER_CODE AND PRICE < 20;
+Empty set, 1568 warnings (0.00 sec)
+
+mysql> SELECT BOOK_CODE, TITLE, PUBLISHER_NAME, PRICE FROM BOOK JOIN PUBLISHER ON BOOK.PUBLISHER_CODE - PUBLISHER.PUBLISHER_CODE AND PRICE < 20;
+Empty set, 1568 warnings (0.00 sec)
+
+mysql> SELECT BOOK_CODE, TITLE, PUBLISHER_NAME, PRICE FROM BOOK JOIN PUBLISHER ON BOOK.PUBLISHER_CODE - PUBLISHER.PUBLISHER_CODE AND PAPERBACK = 'N';
+Empty set, 560 warnings (0.01 sec)
+
+mysql> SELECT BOOK_CODE, TITLE, PUBLISHER_NAME, PRICE FROM BOOK JOIN PUBLISHER ON BOOK.PUBLISHER_CODE = PUBLISHER.PUBLISHER_CODE AND PAPERBACK = 'N' AND PRICE < 20;
++-----------+------------------------------------------+--------------------------+-------+
+| BOOK_CODE | TITLE                                    | PUBLISHER_NAME           | PRICE |
++-----------+------------------------------------------+--------------------------+-------+
+| 1351      | Dreamcatcher: A Novel                    | Scribner                 | 19.60 |
+| 2226      | Harry Potter and the Prisoner of Azkaban | Scholastic Trade         | 13.96 |
+| 2908      | Electric Light                           | Farrar Straus and Giroux | 14.00 |
+| 7443      | Harry Potter and the Goblet of Fire      | Scholastic Trade         | 18.16 |
+| 9611      | Black House                              | Random House             | 18.81 |
+| 9931      | To Kill a Mockingbird                    | HarperCollins Publishers | 18.00 |
++-----------+------------------------------------------+--------------------------+-------+
+6 rows in set (0.00 sec)
+
+mysql> CREATE VIEW BOOK_INVENTORY AS SELECT BRANCH_NUM, SUM(ON_HAND) UNITS FROM INVENTORY GROUP BY BRANCH_NUM ORDER_BY BRANCH_NUM;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ORDER_BY BRANCH_NUM' at line 1
+mysql> CREATE VIEW BOOK_INVENTORY AS SELECT BRANCH_NUM, SUM(ON_HAND) UNITS FROM INVENTORY GROUP BY BRANCH_NUM ORDER BY BRANCH_NUM;
+Query OK, 0 rows affected (0.12 sec)
+
+mysql> SELECT * FROM BOOK_INVENTORY;
++------------+-------+
+| BRANCH_NUM | UNITS |
++------------+-------+
+|          1 |    22 |
+|          2 |    31 |
+|          3 |    29 |
+|          4 |    17 |
++------------+-------+
+4 rows in set (0.01 sec)
+
+mysql> SELECT * FROM BOOK_INVENTORY WHERE UNITS > 25;
++------------+-------+
+| BRANCH_NUM | UNITS |
++------------+-------+
+|          2 |    31 |
+|          3 |    29 |
++------------+-------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT BRANCH_NUM, SUM(ON_HAND) UNITS FROM INVENTORY WHERE UNITS > 25 GROUP BY BRANCH_NUM ORDER BY BRANCH_NUM;
+ERROR 1054 (42S22): Unknown column 'UNITS' in 'where clause'
+mysql> SELECT BRANCH_NUM, SUM(ON_HAND) UNITS FROM INVENTORY WHERE SUM(ON_HAND) > 25 GROUP BY BRANCH_NUM ORDER BY BRANCH_NUM;
+ERROR 1111 (HY000): Invalid use of group function
+mysql> SELECT BRANCH_NUM, SUM(ON_HAND) UNITS FROM INVENTORY GROUP BY BRANCH_NUM ORDER BY BRANCH_NUM;
++------------+-------+
+| BRANCH_NUM | UNITS |
++------------+-------+
+|          1 |    22 |
+|          2 |    31 |
+|          3 |    29 |
+|          4 |    17 |
++------------+-------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT BRANCH_NUM, SUM(ON_HAND) UNITS FROM INVENTORY WHERE SUM(ON_HAND) > 25 GROUP BY BRANCH_NUM ORDER BY BRANCH_NUM;
+ERROR 1111 (HY000): Invalid use of group function
+mysql> SELECT BRANCH_NUM, SUM(ON_HAND) UNITS FROM INVENTORY GROUP BY BRANCH_NUM HAVING SUM(ON_HAND) > 25 ORDER BY BRANCH_NUM;
++------------+-------+
+| BRANCH_NUM | UNITS |
++------------+-------+
+|          2 |    31 |
+|          3 |    29 |
++------------+-------+
+2 rows in set (0.00 sec)
+
+mysql> GRANT SELECT ON BOOK TO 'Rodriguez';
+ERROR 1133 (42000): Can't find any matching row in the user table
+mysql> GRANT SELECT ON BOOK TO 'Rodriquez';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT ADD ON BOOK, PUBLISHER TO 'Gomez', 'Liston';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ADD ON BOOK, PUBLISHER TO 'Gomez', 'Liston'' at line 1
+mysql> GRANT INSERT ON BOOK, PUBLISHER TO 'Gomez', 'Liston';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' PUBLISHER TO 'Gomez', 'Liston'' at line 1
+mysql> GRANT INSERT ON BOOK AND ON PUBLISHER TO 'Gomez', 'Liston';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AND ON PUBLISHER TO 'Gomez', 'Liston'' at line 1
+mysql> GRANT INSERT ON BOOK,PUBLISHER TO 'Gomez', 'Liston';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'PUBLISHER TO 'Gomez', 'Liston'' at line 1
+mysql> GRANT INSERT ON PUBLISHER, BOOK TO 'Gomez', 'Liston';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' BOOK TO 'Gomez', 'Liston'' at line 1
+mysql> GRANT INSERT ON PUBLISHER TO 'Gomez', 'Liston' AND GRANT INSERT ON BOOK TO 'Gomez', 'Liston';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AND GRANT INSERT ON BOOK TO 'Gomez', 'Liston'' at line 1
+mysql> GRANT INSERT ON PUBLISHER TO 'Gomez', 'Liston';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT INSERT ON BOOK TO 'Gomez', 'Liston';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT INSERT ON BOOK, PUBLISHER TO 'Gomez', 'Liston';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' PUBLISHER TO 'Gomez', 'Liston'' at line 1
+mysql> GRANT MODIFY(PRICE) ON BOOK TO 'Andrews', 'Zimmer';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'MODIFY(PRICE) ON BOOK TO 'Andrews', 'Zimmer'' at line 1
+mysql> GRANT UPDATE(PRICE) ON BOOK TO 'Andrews', 'Zimmer';
+Query OK, 0 rows affected (0.00 sec)
+mysql> EXIT;
+
+mysql> use henry_books;
+Database changed
+mysql> update book set price = 12.33 where book_code = 0180;
+Query OK, 1 rows affected (0.02 sec)
+mysql> EXIT;
+
+mysql> USE HENRY_BOOKS;
+Database changed
+mysql> GRANT SELECT(TITLE, BOOK_CODE, PRICE) ON BOOK TO 'Rodriquez', 'Gomez', 'Liston', 'Andrews', 'Zimmer', 'Golden';
+Query OK, 0 rows affected (0.00 sec)
+mysql> EXIT;
+
+mysql> USE HENRY_BOOKS;
+Database changed
+mysql> GRANT INSERT, DELETE ON PUBLISHER ON 'Golden';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ON 'Golden'' at line 1
+mysql> GRANT INSERT, DELETE ON PUBLISHER TO 'Golden';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT INDEX ON BOOK TO 'Andrews';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT ALTER AUTHOR TO 'Andrews', 'Gold';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AUTHOR TO 'Andrews', 'Gold'' at line 1
+mysql> GRANT ALTER ON AUTHOR TO 'Andrews', 'Gold';
+ERROR 1133 (42000): Can't find any matching row in the user table
+mysql> GRANT ALTER ON AUTHOR TO 'Andrews', 'Golden';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT ALL ON BRANCH TO 'Golden';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> REVOKE ALL FROM 'Andrews';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM 'Andrews'' at line 1
+mysql> REVOKE SELECT, UPDATE(PRICE), INDEX FROM 'Andrews';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM 'Andrews'' at line 1
+mysql> REVOKE SELECT, UPDATE(PRICE), INDEX ON BOOK, PUBLISHER, AUTHOR FROM 'Andrews';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' PUBLISHER, AUTHOR FROM 'Andrews'' at line 1
+mysql> REVOKE SELECT ON BOOK FROM 'Andrews';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> REVOKE ALTER ON AUTHOR FROM 'Andrews';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> REVOKE INDEX ON BOOK FROM 'Andrews';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> REVOKE UPDATE ON BOOK FROM 'Andrews';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CREATE INDEX BOOK_INDEX1 ON BOOK(TITLE);
+Query OK, 0 rows affected (0.50 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM BOOK_INDEX1;
+ERROR 1146 (42S02): Table 'henry_books.book_index1' doesn't exist
+mysql> CREATE INDEX BOOK_INDEX2 ON BOOK(TYPE);
+Query OK, 0 rows affected (0.41 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> CREATE INDEX BOOK_INDEX3 ON PUBLISHER(CITY, PUBLISHER_NAME);
+Query OK, 0 rows affected (0.48 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE PUBLISHER DROP INDEX BOOK_INDEX3;
+Query OK, 0 rows affected (0.27 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SHOW TABLES;
++-----------------------+
+| Tables_in_henry_books |
++-----------------------+
+| author                |
+| book                  |
+| book_inventory        |
+| branch                |
+| inventory             |
+| nonpaperback          |
+| publisher             |
+| scribner              |
+| wrote                 |
++-----------------------+
+9 rows in set (0.02 sec)
+
+mysql> SHOW COLUMNS FROM PUBLISHER;
++----------------+----------+------+-----+---------+-------+
+| Field          | Type     | Null | Key | Default | Extra |
++----------------+----------+------+-----+---------+-------+
+| PUBLISHER_CODE | char(3)  | NO   | PRI | NULL    |       |
+| PUBLISHER_NAME | char(25) | YES  |     | NULL    |       |
+| CITY           | char(20) | YES  |     | NULL    |       |
++----------------+----------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> SHOW INDEXES FROM PUBLISHER;
++-----------+------------+----------+--------------+----------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table     | Non_unique | Key_name | Seq_in_index | Column_name    | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++-----------+------------+----------+--------------+----------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| publisher |          0 | PRIMARY  |            1 | PUBLISHER_CODE | A         |          28 |     NULL | NULL   |      | BTREE      |         |               |
++-----------+------------+----------+--------------+----------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+1 row in set (0.00 sec)
+
+mysql> SHOW GRANTS ON 'Golden';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ON 'Golden'' at line 1
+mysql> SHOW GRANTS FOR 'Golden';
++----------------------------------------------------------------------------------------+
+| Grants for Golden@%                                                                    |
++----------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO 'Golden'@'%'                                                     |
+| GRANT ALTER ON `henry_books`.`author` TO 'Golden'@'%'                                  |
+| GRANT SELECT (PRICE, TITLE, BOOK_CODE), UPDATE ON `henry_books`.`book` TO 'Golden'@'%' |
+| GRANT ALL PRIVILEGES ON `henry_books`.`branch` TO 'Golden'@'%'                         |
+| GRANT INSERT, DELETE ON `henry_books`.`publisher` TO 'Golden'@'%'                      |
++----------------------------------------------------------------------------------------+
+5 rows in set (0.00 sec)
+
+mysql> ALTER TABLE BOOK ADD FOREIGN KEY(PUBLISHER_CODE) REFERENCES PUBLISHER(PUBLISHER_CODE);
+Query OK, 33 rows affected (1.14 sec)
+Records: 33  Duplicates: 0  Warnings: 0
+
+mysql> EXIT;

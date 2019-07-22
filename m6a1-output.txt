@@ -1,0 +1,205 @@
+mysql> use premiere;
+Database changed
+mysql> CREATE TABLE NONAPPLIANCE LIKE PART;
+Query OK, 0 rows affected (0.42 sec)
+
+mysql> SHOW COLUMNS FROM NONAPPLIANCE;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| PART_NUM    | char(4)      | NO   | PRI | NULL    |       |
+| DESCRIPTION | char(15)     | YES  |     | NULL    |       |
+| ON_HAND     | decimal(4,0) | YES  |     | NULL    |       |
+| CLASS       | char(2)      | YES  |     | NULL    |       |
+| WAREHOUSE   | char(1)      | YES  |     | NULL    |       |
+| PRICE       | decimal(6,2) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+6 rows in set (0.01 sec)
+
+mysql> ALTER TABLE NONAPPLIANCE DROP WAREHOUSE;
+Query OK, 0 rows affected (0.45 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SHOW COLUMNS FROM NONAPPLIANCE;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| PART_NUM    | char(4)      | NO   | PRI | NULL    |       |
+| DESCRIPTION | char(15)     | YES  |     | NULL    |       |
+| ON_HAND     | decimal(4,0) | YES  |     | NULL    |       |
+| CLASS       | char(2)      | YES  |     | NULL    |       |
+| PRICE       | decimal(6,2) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> ALTER TABLE NONAPPLIANCE ALTER COLUMN PART_NUM CHAR(4) NOT NULL;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'CHAR(4) NOT NULL' at line 1
+mysql> ALTER TABLE NONAPPLIANCE ALTER COLUMN PART_NUM CHAR NOT NULL;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'CHAR NOT NULL' at line 1
+mysql> ALTER TABLE NONAPPLIANCE MODIFY COLUMN PART_NUM CHAR(4) NOT NULL;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SHOW COLUMNS FROM NONAPPLIANCE;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| PART_NUM    | char(4)      | NO   | PRI | NULL    |       |
+| DESCRIPTION | char(15)     | YES  |     | NULL    |       |
+| ON_HAND     | decimal(4,0) | YES  |     | NULL    |       |
+| CLASS       | char(2)      | YES  |     | NULL    |       |
+| PRICE       | decimal(6,2) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO NONAPPLIANCE (PART_NUM, DESCRIPTION, ON_HAND, CLASS, PRICE) SELECT PART_NUM, DESCRIPTION, ON_HAND, CLASS, PRICE FROM PART WHERE TYPE != "AP";
+ERROR 1054 (42S22): Unknown column 'TYPE' in 'where clause'
+mysql> INSERT INTO NONAPPLIANCE (PART_NUM, DESCRIPTION, ON_HAND, CLASS, PRICE) SELECT PART_NUM, DESCRIPTION, ON_HAND, CLASS, PRICE FROM PART WHERE CLASS != "AP";
+Query OK, 5 rows affected (0.08 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM NONAPPLIANCE;
++----------+----------------+---------+-------+---------+
+| PART_NUM | DESCRIPTION    | ON_HAND | CLASS | PRICE   |
++----------+----------------+---------+-------+---------+
+| AT94     | Iron           |      50 | HW    |   24.95 |
+| BV06     | Home Gym       |      45 | SG    |  794.95 |
+| DL71     | Cordless Drill |      21 | HW    |  129.95 |
+| FD21     | Stand Mixer    |      22 | HW    |  159.95 |
+| KV29     | Treadmill      |       9 | SG    | 1390.00 |
++----------+----------------+---------+-------+---------+
+5 rows in set (0.00 sec)
+
+mysql> UPDATE NONAPPLIANCE SET DESCRIPTION = "Deluxe Iron" WHERE PART_NUM = "AT94";
+Query OK, 1 row affected (0.14 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM NONAPPLIANCE;
++----------+----------------+---------+-------+---------+
+| PART_NUM | DESCRIPTION    | ON_HAND | CLASS | PRICE   |
++----------+----------------+---------+-------+---------+
+| AT94     | Deluxe Iron    |      50 | HW    |   24.95 |
+| BV06     | Home Gym       |      45 | SG    |  794.95 |
+| DL71     | Cordless Drill |      21 | HW    |  129.95 |
+| FD21     | Stand Mixer    |      22 | HW    |  159.95 |
+| KV29     | Treadmill      |       9 | SG    | 1390.00 |
++----------+----------------+---------+-------+---------+
+5 rows in set (0.00 sec)
+
+mysql> UPDATE NONAPPLIANCE SET PRICE = PRICE * 1.02 WHERE CLASS = "SG";
+Query OK, 2 rows affected, 1 warning (0.13 sec)
+Rows matched: 2  Changed: 2  Warnings: 1
+
+mysql> SELECT * FROM NONAPPLIANCE;
++----------+----------------+---------+-------+---------+
+| PART_NUM | DESCRIPTION    | ON_HAND | CLASS | PRICE   |
++----------+----------------+---------+-------+---------+
+| AT94     | Deluxe Iron    |      50 | HW    |   24.95 |
+| BV06     | Home Gym       |      45 | SG    |  810.85 |
+| DL71     | Cordless Drill |      21 | HW    |  129.95 |
+| FD21     | Stand Mixer    |      22 | HW    |  159.95 |
+| KV29     | Treadmill      |       9 | SG    | 1417.80 |
++----------+----------------+---------+-------+---------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO NONAPPLIANCE(PART_NUM, DESCRIPTION, ON_HAND, CLASS, PRICE) VALUES('TL92', 'Trimmer', 11, 'HW', 29.95);
+Query OK, 1 row affected (0.15 sec)
+
+mysql> SELECT * FROM NONAPPLIANCE;
++----------+----------------+---------+-------+---------+
+| PART_NUM | DESCRIPTION    | ON_HAND | CLASS | PRICE   |
++----------+----------------+---------+-------+---------+
+| AT94     | Deluxe Iron    |      50 | HW    |   24.95 |
+| BV06     | Home Gym       |      45 | SG    |  810.85 |
+| DL71     | Cordless Drill |      21 | HW    |  129.95 |
+| FD21     | Stand Mixer    |      22 | HW    |  159.95 |
+| KV29     | Treadmill      |       9 | SG    | 1417.80 |
+| TL92     | Trimmer        |      11 | HW    |   29.95 |
++----------+----------------+---------+-------+---------+
+6 rows in set (0.00 sec)
+
+mysql> DELETE FROM NONAPPLIANCE WHERE CLASS = 'SG';
+Query OK, 2 rows affected (0.13 sec)
+
+mysql> SELECT * FROM NONAPPLIANCE;
++----------+----------------+---------+-------+--------+
+| PART_NUM | DESCRIPTION    | ON_HAND | CLASS | PRICE  |
++----------+----------------+---------+-------+--------+
+| AT94     | Deluxe Iron    |      50 | HW    |  24.95 |
+| DL71     | Cordless Drill |      21 | HW    | 129.95 |
+| FD21     | Stand Mixer    |      22 | HW    | 159.95 |
+| TL92     | Trimmer        |      11 | HW    |  29.95 |
++----------+----------------+---------+-------+--------+
+4 rows in set (0.00 sec)
+
+mysql> UPDATE NONAPPLIANCE SET PART_NUM = NULL WHERE PART = "FD21";
+ERROR 1054 (42S22): Unknown column 'PART' in 'where clause'
+mysql> UPDATE NONAPPLIANCE SET PART_NUM = NULL WHERE PART_NUM = "FD21";
+ERROR 1048 (23000): Column 'PART_NUM' cannot be null
+mysql> UPDATE NONAPPLIANCE SET CLASS = NULL WHERE PART_NUM = "FD21";
+Query OK, 1 row affected (0.03 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM NONAPPLIANCE;
++----------+----------------+---------+-------+--------+
+| PART_NUM | DESCRIPTION    | ON_HAND | CLASS | PRICE  |
++----------+----------------+---------+-------+--------+
+| AT94     | Deluxe Iron    |      50 | HW    |  24.95 |
+| DL71     | Cordless Drill |      21 | HW    | 129.95 |
+| FD21     | Stand Mixer    |      22 | NULL  | 159.95 |
+| TL92     | Trimmer        |      11 | HW    |  29.95 |
++----------+----------------+---------+-------+--------+
+4 rows in set (0.00 sec)
+
+mysql> ALTER TABLE NONAPPLIANCE ADD ON_HAND_VALUE DECIMAL(7,2);
+Query OK, 0 rows affected (0.69 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> UPDATE NONAPPLIANCE SET ON_HAND_VALUE = ON_HAND * PRICE;
+Query OK, 4 rows affected (0.04 sec)
+Rows matched: 4  Changed: 4  Warnings: 0
+
+mysql> SELECT * FROM NONAPPLIANCE;
++----------+----------------+---------+-------+--------+---------------+
+| PART_NUM | DESCRIPTION    | ON_HAND | CLASS | PRICE  | ON_HAND_VALUE |
++----------+----------------+---------+-------+--------+---------------+
+| AT94     | Deluxe Iron    |      50 | HW    |  24.95 |       1247.50 |
+| DL71     | Cordless Drill |      21 | HW    | 129.95 |       2728.95 |
+| null     | Stand Mixer    |      22 | HW    | 159.95 |       3518.90 |
+| TL92     | Trimmer        |      11 | HW    |  29.95 |        329.45 |
++----------+----------------+---------+-------+--------+---------------+
+4 rows in set (0.00 sec)
+
+mysql> ALTER TABLE NONAPPLIANCE MODIFY COLUMN DESCRIPTION CHAR(30);
+Query OK, 4 rows affected (1.05 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> SHOW COLUMNS FROM NONAPPLIANCE;
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| PART_NUM      | char(4)      | NO   | PRI | NULL    |       |
+| DESCRIPTION   | char(30)     | YES  |     | NULL    |       |
+| ON_HAND       | decimal(4,0) | YES  |     | NULL    |       |
+| CLASS         | char(2)      | YES  |     | NULL    |       |
+| PRICE         | decimal(6,2) | YES  |     | NULL    |       |
+| ON_HAND_VALUE | decimal(7,2) | YES  |     | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> DROP TABLE NONAPPLIANCE;
+Query OK, 0 rows affected (0.30 sec)
+
+mysql> SHOW TABLES FROM PREMIERE;
++--------------------+
+| Tables_in_premiere |
++--------------------+
+| customer           |
+| order_line         |
+| orders             |
+| part               |
+| rep                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> EXIT;

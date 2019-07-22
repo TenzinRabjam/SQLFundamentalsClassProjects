@@ -1,0 +1,157 @@
+mysql> USE HENRY_BOOKS;
+Database changed
+mysql> CREATE TABLE MYSTERY LIKE BOOK;
+Query OK, 0 rows affected (0.44 sec)
+
+mysql> ALTER TABLE MYSTERY DROP TYPE, PAPERBACK;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'PAPERBACK' at line 1
+mysql> ALTER TABLE MYSTERY DROP TYPE, DROP PAPERBACK;
+Query OK, 0 rows affected (0.64 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SHOW COLUMNS FROM MYSTERY;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| BOOK_CODE      | char(4)      | NO   | PRI | NULL    |       |
+| TITLE          | char(40)     | YES  |     | NULL    |       |
+| PUBLISHER_CODE | char(3)      | YES  |     | NULL    |       |
+| PRICE          | decimal(4,2) | YES  |     | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO MYSTERY(BOOK_CODE, TITLE, PUBLISHER_CODE, PRICE) SELECT BOOK_CODE, TITLE, PUBLISHER_CODE, PRICE FROM BOOK WHERE TYPE = "MYS";
+Query OK, 3 rows affected (0.14 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM MYSTERY;
++-----------+-------------+----------------+-------+
+| BOOK_CODE | TITLE       | PUBLISHER_CODE | PRICE |
++-----------+-------------+----------------+-------+
+| 079X      | Second Wind | PU             | 24.95 |
+| 0808      | The Edge    | JP             |  6.99 |
+| 9882      | Slay Ride   | JP             |  6.99 |
++-----------+-------------+----------------+-------+
+3 rows in set (0.00 sec)
+
+mysql> UPDATE MYSTERY SET PRICE = PRICE * .96 WHERE PUBLISHER_CODE = "JP";
+Query OK, 2 rows affected, 2 warnings (0.12 sec)
+Rows matched: 2  Changed: 2  Warnings: 2
+
+mysql> SELECT * FROM MYSTERY;
++-----------+-------------+----------------+-------+
+| BOOK_CODE | TITLE       | PUBLISHER_CODE | PRICE |
++-----------+-------------+----------------+-------+
+| 079X      | Second Wind | PU             | 24.95 |
+| 0808      | The Edge    | JP             |  6.71 |
+| 9882      | Slay Ride   | JP             |  6.71 |
++-----------+-------------+----------------+-------+
+3 rows in set (0.00 sec)
+
+mysql> INSERT INTO MYSTERY('9946','Like Me', 'MP', 11.95);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''9946','Like Me', 'MP', 11.95)' at line 1
+mysql> INSERT INTO MYSTERY VALUES('9946','Like Me', 'MP', 11.95);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> SELECT * FROM MYSTERY;
++-----------+-------------+----------------+-------+
+| BOOK_CODE | TITLE       | PUBLISHER_CODE | PRICE |
++-----------+-------------+----------------+-------+
+| 079X      | Second Wind | PU             | 24.95 |
+| 0808      | The Edge    | JP             |  7.27 |
+| 9882      | Slay Ride   | JP             |  7.27 |
+| 9946      | Like Me     | MP             | 11.95 |
++-----------+-------------+----------------+-------+
+4 rows in set (0.00 sec)
+
+mysql> DELETE FROM MYSTERY WHERE BOOK_CODE = '9882';
+Query OK, 1 row affected (0.14 sec)
+
+mysql> SELECT * FROM MYSTERY;
++-----------+-------------+----------------+-------+
+| BOOK_CODE | TITLE       | PUBLISHER_CODE | PRICE |
++-----------+-------------+----------------+-------+
+| 079X      | Second Wind | PU             | 24.95 |
+| 0808      | The Edge    | JP             |  7.27 |
+| 9946      | Like Me     | MP             | 11.95 |
++-----------+-------------+----------------+-------+
+3 rows in set (0.00 sec)
+
+mysql> UPDATE MYSTERY SET PRICE = NULL WHERE TITLE = 'The Edge';  
+Query OK, 1 row affected (0.05 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM MYSTERY;
++-----------+-------------+----------------+-------+
+| BOOK_CODE | TITLE       | PUBLISHER_CODE | PRICE |
++-----------+-------------+----------------+-------+
+| 079X      | Second Wind | PU             | 24.95 |
+| 0808      | The Edge    | JP             |  NULL |
+| 9946      | Like Me     | MP             | 11.95 |
++-----------+-------------+----------------+-------+
+3 rows in set (0.00 sec)
+
+mysql> ALTER TABLE MYSTERY ADD BEST_SELLER CHAR(1) DEFAULT 'N';
+Query OK, 0 rows affected (1.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM MYSTERY;
++-----------+-------------+----------------+-------+-------------+
+| BOOK_CODE | TITLE       | PUBLISHER_CODE | PRICE | BEST_SELLER |
++-----------+-------------+----------------+-------+-------------+
+| 079X      | Second Wind | PU             | 24.95 | N           |
+| 0808      | The Edge    | JP             |  NULL | N           |
+| 9946      | Like Me     | MP             | 11.95 | N           |
++-----------+-------------+----------------+-------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> UPDATE MYSTERY SET BEST_SELLER = 'Y' WHERE TITLE = 'Second Wind';
+Query OK, 1 row affected (0.19 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM MYSTERY;
++-----------+-------------+----------------+-------+-------------+
+| BOOK_CODE | TITLE       | PUBLISHER_CODE | PRICE | BEST_SELLER |
++-----------+-------------+----------------+-------+-------------+
+| 079X      | Second Wind | PU             | 24.95 | Y           |
+| 0808      | The Edge    | JP             |  NULL | N           |
+| 9946      | Like Me     | MP             | 11.95 | N           |
++-----------+-------------+----------------+-------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> ALTER TABLE MYSTERY MODIFY COLUMN TITLE CHAR(50);
+Query OK, 3 rows affected (0.92 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SHOW COLUMNS FROM MYSTERY;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| BOOK_CODE      | char(4)      | NO   | PRI | NULL    |       |
+| TITLE          | char(50)     | YES  |     | NULL    |       |
+| PUBLISHER_CODE | char(3)      | YES  |     | NULL    |       |
+| PRICE          | decimal(4,2) | YES  |     | NULL    |       |
+| BEST_SELLER    | char(1)      | YES  |     | N       |       |
++----------------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> ALTER TABLE MYSTERY MODIFY COLUMN BEST_SELLER CHAR(1) NOT NULL;
+Query OK, 0 rows affected (0.82 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SHOW COLUMNS FROM MYSTERY;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| BOOK_CODE      | char(4)      | NO   | PRI | NULL    |       |
+| TITLE          | char(50)     | YES  |     | NULL    |       |
+| PUBLISHER_CODE | char(3)      | YES  |     | NULL    |       |
+| PRICE          | decimal(4,2) | YES  |     | NULL    |       |
+| BEST_SELLER    | char(1)      | NO   |     | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> DROP TABLE MYSTERY;
+Query OK, 0 rows affected (0.15 sec)
+
+mysql> EXIT;

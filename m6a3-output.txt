@@ -1,0 +1,202 @@
+mysql> USE ALEXAMARA_MARINA_GROUP;
+Database changed
+mysql> CREATE TABLE LARGE_SLIP(MARINA_NUM CHAR(4), SLIP_NUM CHAR(4), RENTAL_FEE DECIMAL(8,2), BOAT_NAME CHAR(50), OWNER_NUM CHAR(4), PRIMARY KEY(MARINA_NUM, SLIP_NUM));
+Query OK, 0 rows affected (0.32 sec)
+
+mysql> SHOW COLUMNS FROM LARGE_SLIP;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| MARINA_NUM | char(4)      | NO   | PRI | NULL    |       |
+| SLIP_NUM   | char(4)      | NO   | PRI | NULL    |       |
+| RENTAL_FEE | decimal(8,2) | YES  |     | NULL    |       |
+| BOAT_NAME  | char(50)     | YES  |     | NULL    |       |
+| OWNER_NUM  | char(4)      | YES  |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO LARGE_SLIP (MARINA_NUM, SLIP_NUM, RENTAL_FEE, BOAT_NAME, OWNER_NUM) SELECT MARINA_NUM, SLIP_NUM, RENTAL_FEE, BOAT_NAME, OWNER_NUM FROM MARINA_SLIP WHERE LENGTH = 40;
+Query OK, 5 rows affected (0.12 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM LARGE_SLIP;
++------------+----------+------------+-------------+-----------+
+| MARINA_NUM | SLIP_NUM | RENTAL_FEE | BOAT_NAME   | OWNER_NUM |
++------------+----------+------------+-------------+-----------+
+| 1          | A1       |    3800.00 | Anderson II | AN75      |
+| 1          | A2       |    3800.00 | Our Toy     | EL25      |
+| 1          | A3       |    3600.00 | Escape      | KE22      |
+| 2          | 5        |    4200.00 | Axxon II    | NO27      |
+| 2          | 6        |    4200.00 | Karvel      | TR72      |
++------------+----------+------------+-------------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> UPDATE LARGE_SLIP SET RENTAL_FEE += 100;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '+= 100' at line 1
+mysql> UPDATE LARGE_SLIP SET RENTAL_FEE = RENTAL_FEE + 100;
+Query OK, 5 rows affected (0.13 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql> SELECT * FROM LARGE_SLIP;
++------------+----------+------------+-------------+-----------+
+| MARINA_NUM | SLIP_NUM | RENTAL_FEE | BOAT_NAME   | OWNER_NUM |
++------------+----------+------------+-------------+-----------+
+| 1          | A1       |    3900.00 | Anderson II | AN75      |
+| 1          | A2       |    3900.00 | Our Toy     | EL25      |
+| 1          | A3       |    3700.00 | Escape      | KE22      |
+| 2          | 5        |    4300.00 | Axxon II    | NO27      |
+| 2          | 6        |    4300.00 | Karvel      | TR72      |
++------------+----------+------------+-------------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> UPDATE LARGE_SLIP SET RENTAL_FEE = RENTAL_FEE * .99 WHERE RENTAL_FEE > 4000;
+Query OK, 2 rows affected (0.12 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> SELECT * FROM LARGE_SLIP;
++------------+----------+------------+-------------+-----------+
+| MARINA_NUM | SLIP_NUM | RENTAL_FEE | BOAT_NAME   | OWNER_NUM |
++------------+----------+------------+-------------+-----------+
+| 1          | A1       |    3900.00 | Anderson II | AN75      |
+| 1          | A2       |    3900.00 | Our Toy     | EL25      |
+| 1          | A3       |    3700.00 | Escape      | KE22      |
+| 2          | 5        |    4257.00 | Axxon II    | NO27      |
+| 2          | 6        |    4257.00 | Karvel      | TR72      |
++------------+----------+------------+-------------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO LARGE_SLIP VALUES(1, 'A4', 3900, 'Bilsan', 'FE82');
+Query OK, 1 row affected (0.14 sec)
+
+mysql> SELECT * FROM LARGE_SLIP;
++------------+----------+------------+-------------+-----------+
+| MARINA_NUM | SLIP_NUM | RENTAL_FEE | BOAT_NAME   | OWNER_NUM |
++------------+----------+------------+-------------+-----------+
+| 1          | A1       |    3900.00 | Anderson II | AN75      |
+| 1          | A2       |    3900.00 | Our Toy     | EL25      |
+| 1          | A3       |    3700.00 | Escape      | KE22      |
+| 1          | A4       |    3900.00 | Bilsan      | FE82      |
+| 2          | 5        |    4257.00 | Axxon II    | NO27      |
+| 2          | 6        |    4257.00 | Karvel      | TR72      |
++------------+----------+------------+-------------+-----------+
+6 rows in set (0.00 sec)
+
+mysql> DELETE FROM LARGE_SLIP WHERE OWNER_NUM = 'TR72';
+Query OK, 1 row affected (0.04 sec)
+
+mysql> SELECT * FROM LARGE_SLIP;
++------------+----------+------------+-------------+-----------+
+| MARINA_NUM | SLIP_NUM | RENTAL_FEE | BOAT_NAME   | OWNER_NUM |
++------------+----------+------------+-------------+-----------+
+| 1          | A1       |    3900.00 | Anderson II | AN75      |
+| 1          | A2       |    3900.00 | Our Toy     | EL25      |
+| 1          | A3       |    3700.00 | Escape      | KE22      |
+| 1          | A4       |    3900.00 | Bilsan      | FE82      |
+| 2          | 5        |    4257.00 | Axxon II    | NO27      |
++------------+----------+------------+-------------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> UPDATE LARGE_SLIP SET BOAT_NAME = 'null' WHERE MARINA_NUM = 1 AND SLIP_NUM = 'A1';
+Query OK, 1 row affected (0.12 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM LARGE_SLIP;
++------------+----------+------------+-----------+-----------+
+| MARINA_NUM | SLIP_NUM | RENTAL_FEE | BOAT_NAME | OWNER_NUM |
++------------+----------+------------+-----------+-----------+
+| 1          | A1       |    3900.00 | null      | AN75      |
+| 1          | A2       |    3900.00 | Our Toy   | EL25      |
+| 1          | A3       |    3700.00 | Escape    | KE22      |
+| 1          | A4       |    3900.00 | Bilsan    | FE82      |
+| 2          | 5        |    4257.00 | Axxon II  | NO27      |
++------------+----------+------------+-----------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> UPDATE LARGE_SLIP SET BOAT_NAME = NULL WHERE MARINA_NUM = 1 AND SLIP_NUM = 'A1';
+Query OK, 1 row affected (0.14 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM LARGE_SLIP;
++------------+----------+------------+-----------+-----------+
+| MARINA_NUM | SLIP_NUM | RENTAL_FEE | BOAT_NAME | OWNER_NUM |
++------------+----------+------------+-----------+-----------+
+| 1          | A1       |    3900.00 | NULL      | AN75      |
+| 1          | A2       |    3900.00 | Our Toy   | EL25      |
+| 1          | A3       |    3700.00 | Escape    | KE22      |
+| 1          | A4       |    3900.00 | Bilsan    | FE82      |
+| 2          | 5        |    4257.00 | Axxon II  | NO27      |
++------------+----------+------------+-----------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> ALTER TABLE LARGE_SLIP ADD CHARTER CHAR(1) DEFAULT 'N';
+Query OK, 0 rows affected (0.77 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM LARGE_SLIP;
++------------+----------+------------+-----------+-----------+---------+
+| MARINA_NUM | SLIP_NUM | RENTAL_FEE | BOAT_NAME | OWNER_NUM | CHARTER |
++------------+----------+------------+-----------+-----------+---------+
+| 1          | A1       |    3900.00 | NULL      | AN75      | N       |
+| 1          | A2       |    3900.00 | Our Toy   | EL25      | N       |
+| 1          | A3       |    3700.00 | Escape    | KE22      | N       |
+| 1          | A4       |    3900.00 | Bilsan    | FE82      | N       |
+| 2          | 5        |    4257.00 | Axxon II  | NO27      | N       |
++------------+----------+------------+-----------+-----------+---------+
+5 rows in set (0.00 sec)
+
+mysql> UPDATE LARGE_SLIP SET CHARTER = 'Y' WHERE BOAT_NAME = 'Our Toy';
+Query OK, 1 row affected (0.05 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM LARGE_SLIP;
++------------+----------+------------+-----------+-----------+---------+
+| MARINA_NUM | SLIP_NUM | RENTAL_FEE | BOAT_NAME | OWNER_NUM | CHARTER |
++------------+----------+------------+-----------+-----------+---------+
+| 1          | A1       |    3900.00 | NULL      | AN75      | N       |
+| 1          | A2       |    3900.00 | Our Toy   | EL25      | Y       |
+| 1          | A3       |    3700.00 | Escape    | KE22      | N       |
+| 1          | A4       |    3900.00 | Bilsan    | FE82      | N       |
+| 2          | 5        |    4257.00 | Axxon II  | NO27      | N       |
++------------+----------+------------+-----------+-----------+---------+
+5 rows in set (0.00 sec)
+
+mysql> ALTER TABLE LARGE_SLIP MODIFY COLUMN BOAT_NAME CHAR(60);
+Query OK, 5 rows affected (1.15 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SHOW COLUMNS FROM LARGE_SLIP;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| MARINA_NUM | char(4)      | NO   | PRI | NULL    |       |
+| SLIP_NUM   | char(4)      | NO   | PRI | NULL    |       |
+| RENTAL_FEE | decimal(8,2) | YES  |     | NULL    |       |
+| BOAT_NAME  | char(60)     | YES  |     | NULL    |       |
+| OWNER_NUM  | char(4)      | YES  |     | NULL    |       |
+| CHARTER    | char(1)      | YES  |     | N       |       |
++------------+--------------+------+-----+---------+-------+
+6 rows in set (0.13 sec)
+
+mysql> ALTER TABLE LARGE_SLIP MODIFY COLUMN LARGE_SLIP CHAR(60) NOT NULL;
+ERROR 1054 (42S22): Unknown column 'LARGE_SLIP' in 'large_slip'
+mysql> ALTER TABLE LARGE_SLIP MODIFY COLUMN RENTAL_FEE CHAR(60) NOT NULL;
+Query OK, 5 rows affected (0.92 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SHOW COLUMNS FROM LARGE_SLIP;
++------------+----------+------+-----+---------+-------+
+| Field      | Type     | Null | Key | Default | Extra |
++------------+----------+------+-----+---------+-------+
+| MARINA_NUM | char(4)  | NO   | PRI | NULL    |       |
+| SLIP_NUM   | char(4)  | NO   | PRI | NULL    |       |
+| RENTAL_FEE | char(60) | NO   |     | NULL    |       |
+| BOAT_NAME  | char(60) | YES  |     | NULL    |       |
+| OWNER_NUM  | char(4)  | YES  |     | NULL    |       |
+| CHARTER    | char(1)  | YES  |     | N       |       |
++------------+----------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> DROP TABLE LARGE_SLIP;
+Query OK, 0 rows affected (0.25 sec)
+
+mysql> EXIT;

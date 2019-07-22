@@ -1,0 +1,289 @@
+mysql> DROP USER IF   EXISTS 'Oliver', 'Crandall', 'Perez', 'Johson', 'Klein','Adams';CREATE USER 'Oliver' IDENTIFIED BY 'PASSWORD';CREATE USER 'Cradall' IDENTIFIED BY   'PASSWORD';CREATE USER 'Perez' IDENTIFIED BY   'PASSWORD';CREATE USER 'Johnson' IDENTIFIED BY   'PASSWORD';CREATE USER 'Klein' IDENTIFIED BY   'PASSWORD';CREATE USER 'Adams' IDENTIFIED BY   'PASSWORD';USE MYSQL;SELECT USER FROM USER;USE ALEXAMARA_MARINA_GROUP;
+Query OK, 0 rows affected, 5 warnings (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Database changed
++------------+
+| USER       |
++------------+
+| Adams      |
+| Andrews    |
+| Ashton     |
+| Cradall    |
+| Danielson  |
+| Golden     |
+| Gomez      |
+| Grinstead  |
+| James      |
+| Johnson    |
+| Kelly      |
+| Klein      |
+| Liston     |
+| Morgan     |
+| Oliver     |
+| Perez      |
+| Rodriquez  |
+| Washington |
+| Zimmer     |
+| mysql.sys  |
+| root       |
++------------+
+21 rows in set (0.00 sec)
+
+Database changed
+mysql> CREATE VIEW LARGE_SLIP AS SELECT MARINA_NUM, SLIP_NUM, RENTAL_FEE, BOAT_NAME, OWNER_NUM FROM MARINA_SLIP WHERE LENGTH = 40;
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> SELECT * FROM LARGE_SLIP;
++------------+----------+------------+-------------+-----------+
+| MARINA_NUM | SLIP_NUM | RENTAL_FEE | BOAT_NAME   | OWNER_NUM |
++------------+----------+------------+-------------+-----------+
+| 1          | A1       |    3800.00 | Anderson II | AN75      |
+| 1          | A2       |    3800.00 | Our Toy     | EL25      |
+| 1          | A3       |    3600.00 | Escape      | KE22      |
+| 2          | 5        |    4200.00 | Axxon II    | NO27      |
+| 2          | 6        |    4200.00 | Karvel      | TR72      |
++------------+----------+------------+-------------+-----------+
+5 rows in set (0.11 sec)
+
+mysql> SELECT MARINA_NUM, SLIP_NUM, RENTAL_FEE, BOAT_NAME FROM LARGE_SLIP WHERE RENTAL_FEE > 3800;
++------------+----------+------------+-----------+
+| MARINA_NUM | SLIP_NUM | RENTAL_FEE | BOAT_NAME |
++------------+----------+------------+-----------+
+| 2          | 5        |    4200.00 | Axxon II  |
+| 2          | 6        |    4200.00 | Karvel    |
++------------+----------+------------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT MARINA_NUM, SLIP_NUM, RENTAL_FEE, BOAT_NAME FROM LARGE_SLIP WHERE RENTAL_FEE >= 3800;
++------------+----------+------------+-------------+
+| MARINA_NUM | SLIP_NUM | RENTAL_FEE | BOAT_NAME   |
++------------+----------+------------+-------------+
+| 1          | A1       |    3800.00 | Anderson II |
+| 1          | A2       |    3800.00 | Our Toy     |
+| 2          | 5        |    4200.00 | Axxon II    |
+| 2          | 6        |    4200.00 | Karvel      |
++------------+----------+------------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT MARINA_NUM, SLIP_NUM, RENTAL_FEE, BOAT_NAME FROM MARINA_SLIP WHERE LENGTH = 40 AND RENTAL_FEE >= 3800;
++------------+----------+------------+-------------+
+| MARINA_NUM | SLIP_NUM | RENTAL_FEE | BOAT_NAME   |
++------------+----------+------------+-------------+
+| 1          | A1       |    3800.00 | Anderson II |
+| 1          | A2       |    3800.00 | Our Toy     |
+| 2          | 5        |    4200.00 | Axxon II    |
+| 2          | 6        |    4200.00 | Karvel      |
++------------+----------+------------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> CREATE VIEW RAY_4025 AS SELECT MARINA_NUM, SLIP_NUM, LENGTH, RENTAL_FEE, BOAT_NAME, LAST_NAME FROM MARINA_SLIP, OWNER WHERE OWNER.OWNER_NUM = MARINA_SLIP.OWNER_NUM AND BOAT_TYPE = 'RAY 4025';
+Query OK, 0 rows affected (0.36 sec)
+
+mysql> SELECT * FROM RAY_4025;
++------------+----------+--------+------------+-----------+-----------+
+| MARINA_NUM | SLIP_NUM | LENGTH | RENTAL_FEE | BOAT_NAME | LAST_NAME |
++------------+----------+--------+------------+-----------+-----------+
+| 1          | A2       |     40 |    3800.00 | Our Toy   | Elend     |
+| 2          | 6        |     40 |    4200.00 | Karvel    | Trent     |
++------------+----------+--------+------------+-----------+-----------+
+2 rows in set (0.12 sec)
+
+mysql> SELECT * FROM RAY_4025 WHERE RENTAL_FEE < 4000;
++------------+----------+--------+------------+-----------+-----------+
+| MARINA_NUM | SLIP_NUM | LENGTH | RENTAL_FEE | BOAT_NAME | LAST_NAME |
++------------+----------+--------+------------+-----------+-----------+
+| 1          | A2       |     40 |    3800.00 | Our Toy   | Elend     |
++------------+----------+--------+------------+-----------+-----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT MARINA_NUM, SLIP_NUM, LENGTH, RENTAL_FEE, BOAT_NAME, LAST_NAME FROM MARINA_SLIP, OWNER WHERE OWNER.OWNER_NUM = MARINA_SLIP.OWNER_NUM AND BOAT_TYPE = 'RAY 4025' AND RENTAL_FEE < 4000;
++------------+----------+--------+------------+-----------+-----------+
+| MARINA_NUM | SLIP_NUM | LENGTH | RENTAL_FEE | BOAT_NAME | LAST_NAME |
++------------+----------+--------+------------+-----------+-----------+
+| 1          | A2       |     40 |    3800.00 | Our Toy   | Elend     |
++------------+----------+--------+------------+-----------+-----------+
+1 row in set (0.00 sec)
+
+mysql> CREATE VIEW SLIP_FEE AS SELECT LENGTH, AVG(RENTAL_FEE) AS AVERAGE_FEE FROM MARINA_SLIP GROUP BY LENGTH ORDER BY LENGTH;
+Query OK, 0 rows affected (0.14 sec)
+
+mysql> SELECT * FROM SLIP_FEE;
++--------+-------------+
+| LENGTH | AVERAGE_FEE |
++--------+-------------+
+|     25 | 1866.666667 |
+|     30 | 2500.000000 |
+|     40 | 3920.000000 |
++--------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * FROM SLIP_FEE WHERE AVERAGE_FEE < 3500;
++--------+-------------+
+| LENGTH | AVERAGE_FEE |
++--------+-------------+
+|     25 | 1866.666667 |
+|     30 | 2500.000000 |
++--------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT LENGTH, AVG(RENTAL_FEE) AS AVERAGE_FEE FROM MARINA_SLIP GROUP BY LENGTH ORDER BY LENGTH HAVING AVERAGE_FEE < 3500;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'HAVING AVERAGE_FEE < 3500' at line 1
+mysql> SELECT LENGTH, AVG(RENTAL_FEE) AS AVERAGE_FEE FROM MARINA_SLIP GROUP BY LENGTH ORDER BY LENGTH HAVING AVG(RENTAL_FEE) < 3500;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'HAVING AVG(RENTAL_FEE) < 3500' at line 1
+mysql> SELECT LENGTH, AVG(RENTAL_FEE) AS AVERAGE_FEE FROM MARINA_SLIP WHERE AVG(RENTAL_FEE) < 3500 GROUP BY LENGTH ORDER BY LENGTH;
+ERROR 1111 (HY000): Invalid use of group function
+mysql> SELECT LENGTH, AVG(RENTAL_FEE) AS AVERAGE_FEE FROM MARINA_SLIP GROUP BY LENGTH HAVING AVG(RENTAL_FEE) < 3500 ORDER BY LENGTH
+    -> ;
++--------+-------------+
+| LENGTH | AVERAGE_FEE |
++--------+-------------+
+|     25 | 1866.666667 |
+|     30 | 2500.000000 |
++--------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> GRANT SELECT ON MARINA_SLIP TO 'Oliver';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT INSERT ON OWNER, SLIP_NUM TO 'Crandall', 'Perez';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' SLIP_NUM TO 'Crandall', 'Perez'' at line 1
+mysql> GRANT INSERT ON OWNER TO 'Crandall', 'Perez';
+ERROR 1133 (42000): Can't find any matching row in the user table
+mysql> GRANT INSERT ON OWNER TO 'Cradall', 'Perez';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT INSERT ON SLIP_NUM TO 'Cradall', 'Perez';
+ERROR 1146 (42S02): Table 'alexamara_marina_group.SLIP_NUM' doesn't exist
+mysql> GRANT INSERT ON MARINA_SLIP TO 'Cradall', 'Perez';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT UPDATE(RENTAL_FEE) ON MARINA_SLIP TO 'Johnson', 'Klein';
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> GRANT SELECT(LENGTH, BOAT_NAME, OWNER_NUM) ON MARINA_SLIP TO 'Oliver', 'Crandall', 'Perez', 'Johson', 'Klein','Adams'; 
+ERROR 1133 (42000): Can't find any matching row in the user table
+mysql> GRANT SELECT(LENGTH, BOAT_NAME, OWNER_NUM) ON MARINA_SLIP TO 'Oliver', 'Cradall', 'Perez', 'Johson', 'Klein','Adams'; 
+ERROR 1133 (42000): Can't find any matching row in the user table
+mysql> GRANT SELECT(LENGTH, BOAT_NAME, OWNER_NUM) ON MARINA_SLIP TO 'Oliver', 'Cradall', 'Perez', 'JohNson', 'Klein','Adams'; 
+ERROR 1133 (42000): Can't find any matching row in the user table
+mysql> GRANT SELECT(LENGTH, BOAT_NAME, OWNER_NUM) ON MARINA_SLIP TO 'Oliver', 'Cradall', 'Perez', 'Johnson', 'Klein','Adams'; 
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT INSERT , DELETE ON CATEGORIES TO 'Klein';
+ERROR 1146 (42S02): Table 'alexamara_marina_group.CATEGORIES' doesn't exist
+mysql> GRANT INSERT , DELETE ON SERVICE_CATEGORY TO 'Klein';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT CREATE INDEX ON SERVICE_REQUEST TO 'Adams';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'INDEX ON SERVICE_REQUEST TO 'Adams'' at line 1
+mysql> GRANT INDEX ON SERVICE_REQUEST TO 'Adams';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT ALTER ON MARINA_SLIP TO 'Klein', 'Adams';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT ALL ON MARINA TO 'Klein';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> REVOKE ALL FROM 'Adams';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM 'Adams'' at line 1
+mysql> REVOKE ALL PRIVILEGES FROM 'Adams';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM 'Adams'' at line 1
+mysql> REVOKE SELECT ON MARINA_SLIP FROM 'Adams';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> REVOKE INDEX ON SERVICE_REQUEST FROM 'Adams';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> REVOKE ALTER ON MARINA_SLIP FROM 'Adams';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT ALTER ON MARINA_SLIP TO 'Klein', 'Adams';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CREATE INDEX BOAT_INDEX1 ON MARINA_SLIP(OWNER_NUM);
+Query OK, 0 rows affected (0.47 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> CREATE INDEX BOAT_INDEX2 ON MARINA_SLIP(BOAT_NAME);
+Query OK, 0 rows affected (0.41 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> CREATE INDEX BOAT_INDEX3 ON MARINA_SLIP(LENGTH, BOAT_NAME);
+Query OK, 0 rows affected (0.36 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> DROP INDEX BOAT_INDEX3 ON MARINA_SLIP(LENGTH, BOAT_NAME);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '(LENGTH, BOAT_NAME)' at line 1
+mysql> ALTER TABLE MARINA_SLIP DROP INDEX BOAT_INDEX3;
+Query OK, 0 rows affected (0.28 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SHOW TABLES;
++----------------------------------+
+| Tables_in_alexamara_marina_group |
++----------------------------------+
+| large_slip                       |
+| marina                           |
+| marina_slip                      |
+| owner                            |
+| ray_4025                         |
+| service_category                 |
+| service_request                  |
+| slip_fee                         |
++----------------------------------+
+8 rows in set (0.00 sec)
+
+mysql> SHOW COLUMNS FROM MARINA_SLIP;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| SLIP_ID    | decimal(4,0) | NO   | PRI | NULL    |       |
+| MARINA_NUM | char(4)      | YES  |     | NULL    |       |
+| SLIP_NUM   | char(4)      | YES  |     | NULL    |       |
+| LENGTH     | decimal(4,0) | YES  |     | NULL    |       |
+| RENTAL_FEE | decimal(8,2) | YES  |     | NULL    |       |
+| BOAT_NAME  | char(50)     | YES  | MUL | NULL    |       |
+| BOAT_TYPE  | char(50)     | YES  |     | NULL    |       |
+| OWNER_NUM  | char(4)      | YES  | MUL | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> SHOW INDEX FROM MARINA_SLIP;
++-------------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table       | Non_unique | Key_name    | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++-------------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| marina_slip |          0 | PRIMARY     |            1 | SLIP_ID     | A         |          11 |     NULL | NULL   |      | BTREE      |         |               |
+| marina_slip |          1 | BOAT_INDEX1 |            1 | OWNER_NUM   | A         |          10 |     NULL | NULL   | YES  | BTREE      |         |               |
+| marina_slip |          1 | BOAT_INDEX2 |            1 | BOAT_NAME   | A         |          11 |     NULL | NULL   | YES  | BTREE      |         |               |
++-------------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+3 rows in set (0.00 sec)
+
+mysql> SHOW GRANTS FOR 'Klein';
++----------------------------------------------------------------------------------------------------------------------------------+
+| Grants for Klein@%                                                                                                               |
++----------------------------------------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO 'Klein'@'%'                                                                                                |
+| GRANT INSERT, DELETE ON `alexamara_marina_group`.`service_category` TO 'Klein'@'%'                                               |
+| GRANT ALL PRIVILEGES ON `alexamara_marina_group`.`marina` TO 'Klein'@'%'                                                         |
+| GRANT SELECT (OWNER_NUM, LENGTH, BOAT_NAME), UPDATE (RENTAL_FEE), ALTER ON `alexamara_marina_group`.`marina_slip` TO 'Klein'@'%' |
++----------------------------------------------------------------------------------------------------------------------------------+
+4 rows in set (0.00 sec)
+
+mysql> ALTER TABLE MARINA_SLIP ADD FOREIGN KEY(OWNER_NUM) REFERENCES OWNER(OWNER_NUM);
+Query OK, 11 rows affected (0.81 sec)
+Records: 11  Duplicates: 0  Warnings: 0
+
+mysql> EXIT
